@@ -1,3 +1,10 @@
 <?php
+require 'vendor/autoload.php';
 
-echo $_SERVER['REQUEST_METHOD'] . " " . $_SERVER['REQUEST_URI'];
+/*
+ * use Dotenv &
+ * load environment variables.
+ * (safeLoad) to skip exceptions if `.env` not exist
+ */
+use Dotenv\Dotenv;
+Dotenv::createImmutable(__DIR__)->safeLoad();
