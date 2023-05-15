@@ -1,17 +1,14 @@
 <?php
+
 require 'vendor/autoload.php';
 
-/*
- * use Dotenv &
- * load environment variables.
- * use `$_ENV` to access variables.
- * (safeLoad) to skip exceptions if `.env` not exist
- */
-use Dotenv\Dotenv;
-Dotenv::createImmutable(__DIR__)->safeLoad();
+use Controllers\CommentController;
+use Controllers\LikeGetController;
+use Controllers\LikePostController;
+use Components\Route;
 
-/*
- * define response to be always in JSON format (RESTFUL-API)
- */
-header('Content-Type: application/json; charset=utf-8');
+Route::GET('posts/5/comments',CommentController::class);
+Route::GET("posts/5/Likes",LikeGetController::class);
+Route::POST("posts/5/Likes",LikePostController::class);
 
+Route::mapRequestController();
