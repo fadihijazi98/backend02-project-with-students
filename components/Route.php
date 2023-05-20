@@ -91,7 +91,7 @@ class Route
                 if ($method == $targetMethod)
                 {
 
-                    echo (new $controller())->index();
+                    echo (new $controller())->$method();
                     return;
                 }
             }
