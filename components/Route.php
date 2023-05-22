@@ -171,7 +171,6 @@ class Route {
 
         $request_path = $mapped_path_params['path'];
         $request_params = $mapped_path_params['params'];
-
         $request_method = $_SERVER['REQUEST_METHOD'];
 
         if (! $request_path) {

@@ -22,13 +22,13 @@ abstract class BaseController {
     public function __call($method, $arguments)
     {
 
-        $handler = $this->handlerMap[$method]; // "GET" -> "index"
+        $handler = $this->handlerMap[$method];
 
         if (! method_exists($this, $handler)) {
 
             return "no " . $handler . " defined as handler";
         }
 
-        return $this->index(... $arguments);
+        return $this->$handler(... $arguments);
     }
 }
