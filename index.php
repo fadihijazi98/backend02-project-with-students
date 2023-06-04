@@ -2,13 +2,33 @@
 
 require 'vendor/autoload.php';
 
-use Controllers\CommentController;
-use Controllers\LikeGetController;
-use Controllers\LikePostController;
+use Controllers\userController;
 use Components\Route;
 
-Route::GET('posts/5/comments',CommentController::class);
-Route::GET("posts/5/Likes",LikeGetController::class);
-Route::POST("posts/5/Likes",LikePostController::class);
+Route::GET("users/{id}", UserController::class, "show");
+Route::POST("users", UserController::class);
+Route::PUT("users/{id}", UserController::class);
+Route::DELETE("users/{id}", UserController::class);
+Route::GET("users/{id}/posts/{id}/comments", UserController::class);
 
-Route::mapRequestController();
+Route::handleRequest();
+
+
+
+
+
+/*
+* static $routes = [
+      "users" => [
+          "GET" => userController
+          "POST" => userController
+      ],
+     "users/{id}" => [
+         "GET" => userController
+         "PUT" => userController
+         "DELETE" => userController
+    ]
+];
+
+ */
+
