@@ -27,4 +27,21 @@ class RequestHelper
 
         return $exploded_request_path;
     }
+
+    /**
+     * Get data that sent as raw string in json format,
+     * To get as associative array data-structure represents the request payload data.
+     *
+     * @return array
+     */
+    public static function getRequestPayload() {
+
+        $data_as_string_in_json_format = file_get_contents("php://input");
+
+        if (! $data_as_string_in_json_format) {
+
+            return [];
+        }
+        return json_decode($data_as_string_in_json_format, true);
+    }
 }

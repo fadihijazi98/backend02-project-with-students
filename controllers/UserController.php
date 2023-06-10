@@ -1,6 +1,8 @@
 <?php
 namespace Controllers;
 
+use Helpers\RequestHelper;
+
 class UserController extends BaseController {
 
     protected function index() {
@@ -26,7 +28,9 @@ class UserController extends BaseController {
     }
 
     protected function create() {
-        return "new Saleh user created";
+
+        $data = RequestHelper::getRequestPayload();
+        return "new user created with username " . $data['username'];
     }
 
     protected function update($id) {
