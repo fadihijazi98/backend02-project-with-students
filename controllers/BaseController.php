@@ -21,8 +21,7 @@ abstract class BaseController {
 
     public function __call($method, $arguments)
     {
-
-        $handler = $this->handlerMap[$method];
+        $handler = key_exists($method, $this->handlerMap) ? $this->handlerMap[$method] : $method;
 
         if (! method_exists($this, $handler)) {
 

@@ -65,37 +65,37 @@ class Route {
      *      "path" => [
      *          "method" => [
      *              "controller" => controller,
-     *              "custom_handler" => handler
-     *          ]
-     *      ],
+     *              "custom_handler" => handler (nullable)
+     *          ],
      *      ...
      * ]
      */
     private static $routes;
 
-    private static function register($path, $method, $controller) {
+    private static function register($path, $method, $controller, $custom_handler) {
 
-        self::$routes[$path][$method] = $controller;
+        self::$routes[$path][$method]["controller"] = $controller;
+        self::$routes[$path][$method]["custom_handler"] = $custom_handler;
     }
 
-    public static function GET($path, $controller) {
+    public static function GET($path, $controller, $custom_handler = null) {
 
-        self::register($path, "GET", $controller);
+        self::register($path, "GET", $controller, $custom_handler);
     }
 
-    public static function POST($path, $controller) {
+    public static function POST($path, $controller, $custom_handler = null) {
 
-        self::register($path, "POST", $controller);
+        self::register($path, "POST", $controller, $custom_handler);
     }
 
-    public static function PUT($path, $controller) {
+    public static function PUT($path, $controller, $custom_handler = null) {
 
-        self::register($path, "PUT", $controller);
+        self::register($path, "PUT", $controller, $custom_handler);
     }
 
-    public static function DELETE($path, $controller) {
+    public static function DELETE($path, $controller, $custom_handler = null) {
 
-        self::register($path, "DELETE", $controller);
+        self::register($path, "DELETE", $controller, $custom_handler);
     }
 
     /**
@@ -164,7 +164,7 @@ class Route {
         ];
     }
 
-    public static function handleRequest() {
+    public static function handleRequest() { // PUT users/13 -> ("users/{id}", "UserController", "like")
 
         $path_parts = RequestHelper::getRequestUriAsArray(true);
         $mapped_path_params = self::mapPathWithParams($path_parts);
@@ -183,7 +183,13 @@ class Route {
         }
         else {
 
-            $controller = self::$routes[$request_path][$request_method];
+            $controller = self::$routes[$request_path][$request_method]["controller"];
+            $custom_handler = self::$routes[$request_path][$request_method]["custom_handler"];
+
+            if ($custom_handler != null) {
+
+                $request_method = $custom_handler;
+            }
 
             /** @var array $request_params */
             echo (new $controller())->$request_method(... $request_params);

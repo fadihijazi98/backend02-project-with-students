@@ -3,14 +3,15 @@ namespace Controllers;
 
 class UserController extends BaseController {
 
-    protected function index($userId, $postId) {
+    protected function index() {
 
-        return "Hello user #" . $userId . " why you want content of post #" . $postId;
+        return "[user.id:11, user.id:12, user.id:13]";
     }
 
     protected function show($id) {
 
-        return "user details for #$id.";
+        return "[user.id:#$id" .
+            ", user.name: fadi]";
     }
 
     protected function create() {
@@ -23,5 +24,9 @@ class UserController extends BaseController {
 
     protected function delete($id) {
         return "user #$id deleted successfully.";
+    }
+
+    protected function like($user_id, $post_id) {
+        return "user #$user_id likes post #$post_id";
     }
 }
