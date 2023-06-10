@@ -72,10 +72,31 @@ class Route {
      */
     private static $routes;
 
+    private static $version = 1;
+
     private static function register($path, $method, $controller, $custom_handler) {
+
+        $path = "api/v" . self::$version . "/" . $path;
 
         self::$routes[$path][$method]["controller"] = $controller;
         self::$routes[$path][$method]["custom_handler"] = $custom_handler;
+    }
+
+    /**
+     * This is method associated to add `api/v*` to all registered requests.
+     * Make sure to passing an integer and none null value when you are use this method.
+     *
+     * @param integer $version_number
+     * @return void
+     * @throws \Exception when `$version_number` is null or none integer.
+     */
+    public static function setVersion($version_number) {
+
+        if ($version_number == null || !is_integer($version_number)) {
+
+            throw new \Exception("[Bad use] Version number can not be null or none integer");
+        }
+        self::$version = $version_number;
     }
 
     public static function GET($path, $controller, $custom_handler = null) {
