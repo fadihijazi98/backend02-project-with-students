@@ -196,11 +196,11 @@ class Route {
 
         if (! $request_path) {
 
-            echo "request is not found.";
+            return ["message" => "request is not found."];
         }
         elseif (! key_exists($request_method, self::$routes[$request_path])) {
 
-            echo "request isn't registered with " . $request_method . " method";
+            return ["message" => "request isn't registered with " . $request_method . " method"];
         }
         else {
 
@@ -213,7 +213,7 @@ class Route {
             }
 
             /** @var array $request_params */
-            echo (new $controller())->$request_method(... $request_params);
+            return (new $controller())->$request_method(... $request_params);
         }
     }
 }

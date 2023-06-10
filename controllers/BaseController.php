@@ -28,6 +28,6 @@ abstract class BaseController {
             return "no " . $handler . " defined as handler";
         }
 
-        return $this->$handler(... $arguments);
+        return ["data" => $this->$handler(... $arguments)];
     }
 }

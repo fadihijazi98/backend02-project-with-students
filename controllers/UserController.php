@@ -5,13 +5,24 @@ class UserController extends BaseController {
 
     protected function index() {
 
-        return "[user.id:11, user.id:12, user.id:13]";
+        return [
+            [
+                "id" => 10,
+                "username" => "saleh.zetawi"
+            ],
+            [
+                "id" => 11,
+                "username" => "ibrahim.s99"
+            ]
+        ];
     }
 
     protected function show($id) {
 
-        return "[user.id:#$id" .
-            ", user.name: fadi]";
+        return [
+            "id" => $id,
+            'username' => 'global.testing'
+        ];
     }
 
     protected function create() {
