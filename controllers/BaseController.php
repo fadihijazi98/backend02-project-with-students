@@ -4,6 +4,11 @@ namespace Controllers;
 
  abstract class BaseController
 {
+    protected abstract function index();
+    protected abstract function show($id);
+    protected abstract function create($id);
+    protected abstract function update($id,$id2);
+    protected abstract function delete($id,$id2);
 
     protected array $handlerMap =
     [
@@ -22,7 +27,7 @@ namespace Controllers;
             return "No".$handler."is defined unfortunately :(";
         }
 
-        return $this->$handler($arguments);
+        return $this->$handler(... $arguments);
         /*
          * With the last code statement, if the handler was defined as private
          * recursion will occur because of calling __call method frequently

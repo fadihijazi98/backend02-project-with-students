@@ -7,14 +7,15 @@ use Controllers\CommentController;
 use Controllers\UserController;
 use Components\Route;
 
-/*
-Route::GET("posts/5/comments",CommentController::class);
+
+/*Route::GET("posts/5/comments",CommentController::class);
 Route::GET("posts/5/likes",LikeController::class);
 Route::POST("posts/5/comments",CommentController::class);
 Route::POST("posts/5/likes",LikeController::class);
 */
 
-
+Route::GET("users/{id}/posts/{id}/comments",UserController::class);
+/*
 Route::GET("users",UserController::class);
 Route::GET("users/{id}",UserController::class);
 Route::POST("users",UserController::class);
@@ -26,7 +27,7 @@ Route::DELETE("users/{id}",UserController::class);
  * to index.php
  */
 
-Route::mapRequestController();
+Route::handleRequest();
 /*
  * Calling this function after registering all designed requests
  * in routes array to map every request from client with

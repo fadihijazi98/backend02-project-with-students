@@ -8,20 +8,20 @@ class UserController extends BaseController
    {
        return "The list of users with their data is now within your reach dear user :)";
    }
-    protected function show($id): string
+    protected function show($userId): string
     {
-        return "User's details whose id = #$id is now within your reach dear user :)";
+        return "User's details whose id = $userId is now within your reach dear user :)";
     }
-    public function create(): string
+    public function create($userId): string
     {
         return "New user was successfully been added :)";
     }
-    public function update($id): string
+    public function update($userId,$id): string
     {
-        return "User's data whose id = #$id was successfully been updated :)";
+        return "User's data whose id = $userId was successfully been updated :)";
     }
-    public function delete($id): string
+    public function delete($userId,$id): string
     {
-        return "User's data whose id = #$id was successfully been deleted :)";
+        return "User's data whose id = $userId was successfully been deleted :)";
     }
 }
