@@ -5,6 +5,10 @@ require "components/Route.php";
 require "routes/v1/route.php";
 require "routes/v2/route.php";
 
+
+// Defining each request and response to be always in JSON format (RESTFUL-API)
+header('Content-Type: application/json; charset=utf-8');
+
 use Components\Route;
 
 Route::handleRequest();
@@ -23,8 +27,5 @@ Route::handleRequest();
 use Dotenv\Dotenv;
 Dotenv::createImmutable(__DIR__)->safeLoad();
 
-/*
- * define response to be always in JSON format (RESTFUL-API)
- */
-header('Content-Type: application/json; charset=utf-8');
+
 

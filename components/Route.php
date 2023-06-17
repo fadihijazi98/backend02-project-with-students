@@ -181,7 +181,7 @@ class Route
                $requestMethod = $customHandler;
            }
 
-           echo (new $controller())->$requestMethod(... $requestParams);
+           return (new $controller())->$requestMethod(... $requestParams);
        }
 
     }

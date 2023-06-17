@@ -6,11 +6,28 @@ class UserController extends BaseController
 {
    protected function index(): string
    {
-       return "The list of users with their data is now within your reach dear user :)";
+       return [
+           "data"=>
+           [
+               "id"=>"1",
+               "username"=>"Jamila"
+           ]
+           ,
+           [
+               "id"=>"2",
+               "username"=>"Abdullah"
+           ]
+       ];
    }
     protected function show($userId): string
     {
-        return "User's details whose id = $userId is now within your reach dear user :)";
+        return [
+            "data"=>
+            [
+                "id"=>$userId,
+                "username"=>"Jamila"
+            ]
+        ];
 
     }
     public function create($userId): string
