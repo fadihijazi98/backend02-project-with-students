@@ -10,11 +10,29 @@ class Route
 {
 
     private static array $routes = [];
+    // It will be the container for all routes that user will ask to get in
+    private static $version;
 
-     // It will be the container for all routes that user will ask to get in
+    /** Documentation:
+     * 1.This method is required to add `api/versionNumber` to all registered requests.
+     * 2.Assure to pass an integer and none null value when you are using this method.
+     * @param integer $versionNumber
+     * @return int
+     * @throws \Exception when $versionNumber is null or not integer
+     */
+    public static function setVersion($versionNumber)
+    {
+        if($versionNumber == null || ! is_integer($versionNumber))
+        {
+            throw new \Exception("[Bad usage] version number can't be null nor any value except integer");
+        }
+        self::$version = $versionNumber;
+    }
+
 
     public static function register($path,$method,$controller,$customHandler): void
     {
+        $path = "api/v".self::$version."/".$path;
         self::$routes[$path][$method]["controller"] = $controller;
         self::$routes[$path][$method]["customHandler"] = $customHandler;
         /* Documentation:
