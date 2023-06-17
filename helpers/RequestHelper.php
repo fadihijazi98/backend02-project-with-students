@@ -5,6 +5,16 @@ class RequestHelper
 {
 
     /**
+     * @param $uri
+     * @return string
+     */
+    public static function getUriWithoutQueryParams($uri) {
+
+        $exploded_request_path_and_query_params = explode("?", $uri);
+        return array_shift($exploded_request_path_and_query_params);
+    }
+
+    /**
      * Split the uri path into parts (array),
      * Note: if you need uri path without domain, set the `$excludeDomain` arg as true.
      *
@@ -12,12 +22,13 @@ class RequestHelper
      * uri = "facebook.com/users"
      * returned value is ["facebook.com", "users"]
      *
+     * @param string $uri excepted uri to be without query params.
      * @param boolean $excludeDomain
      * @return string[]
      */
-    public static function getRequestUriAsArray($excludeDomain = false) {
+    public static function getRequestUriAsArray($uri, $excludeDomain = false) {
 
-        $exploded_request_path = explode("/", $_SERVER['REQUEST_URI']);
+        $exploded_request_path = explode("/", $uri);
 
         array_shift($exploded_request_path);
         if ($excludeDomain) {
