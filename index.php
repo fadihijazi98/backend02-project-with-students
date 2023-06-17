@@ -1,7 +1,7 @@
 <?php
 
 require 'vendor/autoload.php';
-require "components/Route.php";
+
 require "routes/v1/route.php";
 require "routes/v2/route.php";
 
@@ -11,7 +11,8 @@ header('Content-Type: application/json; charset=utf-8');
 
 use Components\Route;
 
-Route::handleRequest();
+$response = Route::handleRequest();
+echo json_encode($response);
 /*
  * Calling this function after registering all designed requests
  * in routes array to map every request from client with
