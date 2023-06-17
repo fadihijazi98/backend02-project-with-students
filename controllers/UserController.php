@@ -11,6 +11,7 @@ class UserController extends BaseController
     protected function show($userId): string
     {
         return "User's details whose id = $userId is now within your reach dear user :)";
+
     }
     public function create($userId): string
     {
