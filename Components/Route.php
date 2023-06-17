@@ -7,29 +7,43 @@ use Helpers\RequestHelper;
 class Route
 {
     private static $routes;
+    private static $version = 1;
 
-    private static function register($path, $method, $controller) {
+    private static function register($path, $method, $controller,$custom_handler) {
 
-        self::$routes[$path][$method] = $controller;
+        $path = "api/v" . self::$version . "/" . $path;
+        self::$routes[$path][$method]["controller"] = $controller;
+        self::$routes[$path][$method]["custom_handler"] = $custom_handler;
+
+
     }
 
-    public static function GET($path, $controller) {
+    public static function setVersion($version_number) {
 
-        self::register($path, "GET", $controller);
+        if ($version_number == null || !is_integer($version_number)) {
+
+            throw new \Exception("[Bad use] Version number can not be null or none integer !");
+        }
+        self::$version = $version_number;
     }
 
-    public static function POST($path, $controller) {
+    public static function GET($path, $controller,$custom_handler=null) {
 
-        self::register($path, "POST", $controller);
+        self::register($path, "GET", $controller,$custom_handler);
     }
 
-    public static function PUT($path, $controller) {
+    public static function POST($path, $controller,$custom_handler=null) {
 
-        self::register($path, "PUT", $controller);
+        self::register($path, "POST", $controller,$custom_handler);
     }
-    public static function DELETE($path, $controller) {
 
-        self::register($path, "DELETE", $controller);
+    public static function PUT($path, $controller,$custom_handler=null) {
+
+        self::register($path, "PUT", $controller,$custom_handler);
+    }
+    public static function DELETE($path, $controller,$custom_handler=null) {
+
+        self::register($path, "DELETE", $controller,$custom_handler);
     }
 
     private static function mapPathWithParams($request_path_parts) {
@@ -85,16 +99,23 @@ class Route
 
         if (! $request_path) {
 
-            echo 'Sorry , there was a problem with your request.';
+            return ["message" => "request is not found."];
         }
         elseif (! key_exists($request_method, self::$routes[$request_path])) {
 
-            echo 'Sorry , request is not registered with ' . $request_method . " method";
+            return ["message" => "request isn't registered with " . $request_method . " method"];
         }
         else {
 
-            $controller = self::$routes[$request_path][$request_method];
-            echo (new $controller())->$request_method(... $request_params);
+            $controller = self::$routes[$request_path][$request_method]["controller"];
+            $custom_handler=self::$routes[$request_path][$request_method]["custom_handler"];
+
+            if($custom_handler != null){
+
+                $request_method=$custom_handler;
+
+            }
+            return (new $controller())->$request_method(... $request_params);
         }
     }
 }

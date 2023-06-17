@@ -16,4 +16,16 @@ class RequestHelper
 
         return $exploded_request_path;
     }
+
+    public static function getRequestPayload() {
+
+        $data_as_string_in_json_format = file_get_contents("php://input");
+
+        if (! $data_as_string_in_json_format) {
+
+            return [];
+        }
+        return json_decode($data_as_string_in_json_format, true);
+    }
+
 }

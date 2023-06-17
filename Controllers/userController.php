@@ -1,21 +1,36 @@
 <?php
 
 namespace Controllers;
+use Helpers\RequestHelper;
 
 class userController extends BaseController
 {
-    protected function index($userId, $postId) {
+    protected function index() {
 
-        return "user ID : $userId , post ID : $postId";
+        return [
+            [
+            "id" => 11,
+             "username" => "donia.ziyad"
+                ],
+            [
+                "id" => 22,
+                "username" => "donia.zi22"
+            ],
+
+            ];
     }
 
     protected function show($id) {
 
-        return "user details for #$id.";
+        return [
+            $id =>33,
+            "username"=>"test"
+        ];
     }
 
     protected function create() {
-        return "user has been successfully created.";
+        $data = RequestHelper::getRequestPayload();
+        return $data['username']. " user has been successfully created.";
     }
 
     protected function update($id) {
@@ -24,5 +39,8 @@ class userController extends BaseController
 
     protected function delete($id) {
         return "user #$id has been successfully deleted .";
+    }
+    protected function like($user_id,$post_id){
+        return " userId = $user_id likes post $post_id";
     }
 }

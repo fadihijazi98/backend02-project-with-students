@@ -1,34 +1,17 @@
 <?php
 
 require 'vendor/autoload.php';
+header('Content-Type: application/json; charset=utf-8');
 
-use Controllers\userController;
 use Components\Route;
+require 'routes/v1/route.php';
+require 'routes/v2/route.php';
 
-Route::GET("users/{id}", UserController::class, "show");
-Route::POST("users", UserController::class);
-Route::PUT("users/{id}", UserController::class);
-Route::DELETE("users/{id}", UserController::class);
-Route::GET("users/{id}/posts/{id}/comments", UserController::class);
-
-Route::handleRequest();
+$response=Route::handleRequest();
+echo json_encode($response);
 
 
 
 
 
-/*
-* static $routes = [
-      "users" => [
-          "GET" => userController
-          "POST" => userController
-      ],
-     "users/{id}" => [
-         "GET" => userController
-         "PUT" => userController
-         "DELETE" => userController
-    ]
-];
-
- */
 

@@ -12,14 +12,14 @@ abstract class BaseController {
     public function __call($method, $arguments)
     {
 
-        $handler = $this->handlerMap[$method];
+        $handler = key_exists($method,$this->handlerMap) ? $this->handlerMap[$method] : $method;
 
         if (! method_exists($this, $handler)) {
 
             return "no " . $handler . " defined as handler";
         }
 
-        return $this->$handler(... $arguments);
+        return ["data" => $this->$handler(... $arguments)];
     }
 
 }
