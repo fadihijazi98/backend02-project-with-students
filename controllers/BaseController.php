@@ -6,7 +6,7 @@ namespace Controllers;
 {
     protected abstract function index();
     protected abstract function show($id);
-    protected abstract function create($id);
+    protected abstract function create();
     protected abstract function update($id,$id2);
     protected abstract function delete($id,$id2);
 

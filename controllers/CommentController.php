@@ -12,9 +12,9 @@ class CommentController extends BaseController
     {
         return "The list of comments of $postId post is now within your reach dear user :)";
     }
-    public function create($postId): string
+    public function create(): string
     {
-        return "A new comment is written in $postId post dear user :)";
+        return "A new comment is written dear user :)";
     }
     public function update($postId,$commentId): string
     {

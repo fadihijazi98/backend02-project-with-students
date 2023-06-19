@@ -4,6 +4,11 @@ namespace Helpers;
 
 class RequestHelper
 {
+    public static function getUriWithOutQueryParams($uri)
+    {
+        $explodedRequestPathWithQueryParams = explode("?",$uri);
+        return array_shift($explodedRequestPathWithQueryParams);
+    }
     /** Documentation:
      * Explode the request URI into parts and store it in an array
      * Note that if you need request URI without domain,assign the value of
@@ -13,9 +18,9 @@ class RequestHelper
      * @param boolean $excludeDomain
      * @return string[]
      */
-    public static function getRequestPathAsArray(bool $excludeDomain = false): array
+    public static function getRequestPathAsArray($uri,bool $excludeDomain = false): array
     {
-        $explodedRequestPath = explode("/", $_SERVER["REQUEST_URI"]);
+        $explodedRequestPath = explode("/", $uri);
 
         array_shift($explodedRequestPath);
 

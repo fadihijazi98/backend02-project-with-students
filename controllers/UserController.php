@@ -9,7 +9,7 @@ class UserController extends BaseController
    protected function index(): array
    {
        return [
-           "data"=>
+
            [
                "id"=>"1",
                "username"=>"Jamila"
@@ -32,7 +32,7 @@ class UserController extends BaseController
         ];
 
     }
-    public function create($userId): string
+    public function create(): string
     {
         $data = RequestHelper::getRequestPayLoad();
         return "New user with " .$data["username"]." was successfully been added :)";
