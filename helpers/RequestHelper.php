@@ -13,7 +13,7 @@ class RequestHelper
      * @param boolean $excludeDomain
      * @return string[]
      */
-    public static function getRequestPathAsArray($excludeDomain = false): array
+    public static function getRequestPathAsArray(bool $excludeDomain = false): array
     {
         $explodedRequestPath = explode("/", $_SERVER["REQUEST_URI"]);
 
@@ -27,4 +27,15 @@ class RequestHelper
         return $explodedRequestPath;
     }
 
+    public static function getRequestPayLoad(): array
+    {
+        $dataAsStringInJsonFormat = file_get_contents("php://input");
+
+        if(! $dataAsStringInJsonFormat)
+        {
+            return [];
+        }
+
+        return json_decode($dataAsStringInJsonFormat,true);
+    }
 }

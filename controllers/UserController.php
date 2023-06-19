@@ -2,9 +2,11 @@
 
 namespace Controllers;
 
+use Helpers\RequestHelper;
+
 class UserController extends BaseController
 {
-   protected function index(): string
+   protected function index(): array
    {
        return [
            "data"=>
@@ -19,7 +21,7 @@ class UserController extends BaseController
            ]
        ];
    }
-    protected function show($userId): string
+    protected function show($userId): array
     {
         return [
             "data"=>
@@ -32,7 +34,8 @@ class UserController extends BaseController
     }
     public function create($userId): string
     {
-        return "New user was successfully been added :)";
+        $data = RequestHelper::getRequestPayLoad();
+        return "New user with " .$data["username"]." was successfully been added :)";
     }
     public function update($userId,$id): string
     {
