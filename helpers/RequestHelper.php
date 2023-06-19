@@ -4,9 +4,16 @@ namespace Helpers;
 
 class RequestHelper
 {
-    public static function getRequestUriAsArray($excludeDomain = false) {
+    public static function getUriWithoutQueryParams($uri){
 
-        $exploded_request_path = explode("/", $_SERVER['REQUEST_URI']);
+        $exploded_path_and_query_params = explode("?",$uri);
+        return array_shift($exploded_path_and_query_params);
+
+    }
+
+    public static function getRequestUriAsArray($uri ,$excludeDomain = false) {
+
+        $exploded_request_path = explode("/",$uri);
 
         array_shift($exploded_request_path);
         if ($excludeDomain) {
