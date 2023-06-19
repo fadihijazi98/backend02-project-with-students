@@ -2,20 +2,23 @@
 
 namespace Controllers;
 
+use Constants\Rules;
+
 class PostController extends BaseController
 {
     protected $validationSchema = [
         "create" => [
             "url" => [
-                "userId" => ["integer"]
+                "userId" => [Rules::INTEGER]
             ],
             "query" => [
-                "content_is_html" => ["boolean"]
+                "content_is_html" => [Rules::BOOLEAN]
             ],
             "payload" => [
-                "content" => ["required", "string"]
+                "content" => [Rules::REQUIRED, Rules::STRING],
+                "email" => [Rules::EMAIL]
             ]
-        ]
+        ],
     ];
 
     /**

@@ -49,7 +49,10 @@ abstract class BaseController {
 
     public function __call($method, $arguments)
     {
-        $handler = key_exists($method, $this->handlerMap) ? $this->handlerMap[$method] : $method;
+
+        $arguments = $arguments[0];
+
+        $handler = key_exists($method, $this->handlerMap) ? $this->handlerMap[$method] : $method;// "create"
 
         if (! method_exists($this, $handler)) {
 
@@ -65,7 +68,7 @@ abstract class BaseController {
         // validate url variables
         if (key_exists("url", $handlerSchema)) {
 
-            $this->validator->validateUrlVariables($handlerSchema["url"], $arguments);
+            $this->validator->validateUrlVariables($handlerSchema["url"], $arguments); // [10]
         }
         // validate query params
         if (key_exists("query", $handlerSchema)) {
@@ -78,6 +81,7 @@ abstract class BaseController {
             $this->validator->validateRequestPayload($handlerSchema["payload"], RequestHelper::getRequestPayload());
         }
 
-        return ["data" => $this->$handler(... $arguments)];
+        $argumentValues = array_values($arguments);
+        return ["data" => $this->$handler(... $argumentValues)];
     }
 }

@@ -159,7 +159,9 @@ class Route {
                 if (str_starts_with($item, "{") && str_ends_with($item, "}"))
                 {
 
-                    $params[] = $request_path_parts[$index];
+                    $param_key = substr($item, 1, strlen($item) - 2);
+                    $params[$param_key] = $request_path_parts[$index];
+
                     continue;
                 }
                 if ($item != $request_path_parts[$index])
@@ -215,7 +217,7 @@ class Route {
             }
 
             /** @var array $request_params */
-            return (new $controller())->$request_method(... $request_params);
+            return (new $controller())->$request_method($request_params);
         }
     }
 }

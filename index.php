@@ -18,6 +18,18 @@ require 'routes/v2/route.php';
  * string
  * '{ "id": 10, "name": "fadi" }'
  */
-$response = Route::handleRequest(); // route concept
+try {
+
+    $response = Route::handleRequest(); // route concept
+}
+catch (Exception $e) {
+
+    $response = [
+        'message' => $e->getMessage()
+    ];
+
+}
+
 echo json_encode($response);
+
 
