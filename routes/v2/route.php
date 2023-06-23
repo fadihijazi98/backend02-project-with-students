@@ -1,6 +1,7 @@
 <?php
 
 use Controllers\UserController;
+use Controllers\PostController;
 use Components\Route;
 
 try
@@ -13,6 +14,7 @@ catch (Exception $e)
 }
 
 Route::GET("users/{id}/posts/{id}/comments",UserController::class);
+Route::POST("users/{id}/posts",PostController::class);
 Route::GET("users",UserController::class);
 Route::GET("users/{id}",UserController::class);
 Route::POST("users",UserController::class);

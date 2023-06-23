@@ -13,7 +13,7 @@ class RequestHelper
      * @param boolean $excludeDomain
      * @return string[]
      */
-    public static function getUriWithOutQueryParams($uri): array
+    public static function getUriWithOutQueryParams($uri)
     {
         $explodedRequestPathWithQueryParams = explode("?",$uri);
         return array_shift($explodedRequestPathWithQueryParams);
@@ -33,7 +33,7 @@ class RequestHelper
         return $explodedRequestPath;
     }
 
-    public static function getRequestPayLoad(): array
+    public static function getRequestPayload()
     {
         $dataAsStringInJsonFormat = file_get_contents("php://input");
 
@@ -41,7 +41,6 @@ class RequestHelper
         {
             return [];
         }
-
         return json_decode($dataAsStringInJsonFormat,true);
     }
 }

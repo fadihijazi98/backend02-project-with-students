@@ -2,8 +2,20 @@
 
 namespace Controllers;
 
+ use Components\Validator;
+ use Helpers\RequestHelper;
+
  abstract class BaseController
 {
+    protected array $validationSchema = [];
+    //It's an empty array to let subclasses modify it as needed
+
+     private $validator;
+
+     public function __construct()
+     {
+         $this->validator = new Validator();
+     }
     protected array $handlerMap =
     [
         "GET"=>"index",
@@ -34,6 +46,28 @@ namespace Controllers;
     public function __call($method,$arguments)
     {
         $handler = key_exists($method,$this->handlerMap) ? $this->handlerMap[$method] : $method;
+
+        $handlerSchema = [];
+
+        if(key_exists($handler,$this->validationSchema))
+        {
+            $handlerSchema = $this->validationSchema[$handler];
+        }
+
+        if(key_exists("url",$handlerSchema))
+        {
+            $this->validator->validateUrlVariables($handlerSchema["url"],$arguments);
+        }
+
+        if(key_exists("query",$handlerSchema))
+        {
+            $this->validator->validateQueryParameters($handlerSchema["query"],$_GET);
+        }
+
+        if(key_exists("payload",$handlerSchema))
+        {
+            $this->validator->validateRequestPayload($handlerSchema["payload"],RequestHelper::getRequestPayload());
+        }
 
         if(!method_exists($this,$handler))
         {
