@@ -3,7 +3,14 @@
 use Controllers\UserController;
 use Components\Route;
 
-Route::setVersion(2);
+try
+{
+    Route::setVersion(2);
+}
+catch (Exception $e)
+{
+
+}
 
 Route::GET("users/{id}/posts/{id}/comments",UserController::class);
 Route::GET("users",UserController::class);

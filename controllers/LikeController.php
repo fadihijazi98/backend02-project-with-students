@@ -14,7 +14,7 @@ class LikeController extends BaseController
     }
     public function create($postId): string
     {
-        return "A new like is written in post whose id = $postId dear user :)";
+        return "A new like is created in post whose id = $postId dear user :)";
     }
     public function update($postId,$likeId): string
     {

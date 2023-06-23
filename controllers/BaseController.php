@@ -4,11 +4,6 @@ namespace Controllers;
 
  abstract class BaseController
 {
-    protected abstract function index();
-    protected abstract function show($id);
-    protected abstract function create($id);
-    protected abstract function update($id,$id2);
-    protected abstract function delete($id,$id2);
 
     protected array $handlerMap =
     [

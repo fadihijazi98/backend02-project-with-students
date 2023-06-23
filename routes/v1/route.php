@@ -4,7 +4,14 @@ use Controllers\LikeController;
 use Controllers\CommentController;
 use Components\Route;
 
-Route::setVersion(1);
+try
+{
+    Route::setVersion(1);
+}
+catch (Exception $e)
+{
+
+}
 
 Route::GET("posts/5/comments",CommentController::class);
 Route::GET("posts/5/likes",LikeController::class);

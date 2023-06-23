@@ -1,10 +1,8 @@
 <?php
 
 require 'vendor/autoload.php';
-
 require "routes/v1/route.php";
 require "routes/v2/route.php";
-
 
 // Defining each request and response to be always in JSON format (RESTFUL-API)
 header('Content-Type: application/json; charset=utf-8');
