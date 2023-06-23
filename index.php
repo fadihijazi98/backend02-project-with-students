@@ -11,6 +11,7 @@ use Components\Route;
 
 $response = Route::handleRequest();
 echo json_encode($response);
+// We used echo because handleRequest method only return array as value and doesn't print it
 /*
  * Calling this function after registering all designed requests
  * in routes array to map every request from client with
