@@ -6,7 +6,8 @@
     "psr-4": {
       "Controllers\\": "Controllers",
       "Components\\" : "Components",
-      "Helpers\\": "helpers"
+      "Helpers\\": "helpers",
+      "Constants\\": "constants"
     }
   }
 }

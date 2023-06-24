@@ -62,7 +62,8 @@ class Route
 
                 if (str_starts_with($item, "{") && str_ends_with($item, "}"))
                 {
-                    $params[] = $request_path_parts[$index];
+                    $param_key = substr($item, 1, strlen($item) - 2);
+                    $params[$param_key] = $request_path_parts[$index];
                     continue;
                 }
                 if ($item != $request_path_parts[$index])
@@ -117,7 +118,7 @@ class Route
                 $request_method=$custom_handler;
 
             }
-            return (new $controller())->$request_method(... $request_params);
+            return (new $controller())->$request_method($request_params);
         }
     }
 }

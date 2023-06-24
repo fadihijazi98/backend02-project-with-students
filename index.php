@@ -7,7 +7,16 @@ use Components\Route;
 require 'routes/v1/route.php';
 require 'routes/v2/route.php';
 
-$response=Route::handleRequest();
+try {
+
+    $response = Route::handleRequest();
+
+} catch (Exception $e){
+    $response = [
+        'message' => $e->getMessage()
+    ];
+
+}
 echo json_encode($response);
 
 
