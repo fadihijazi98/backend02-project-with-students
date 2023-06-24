@@ -2,6 +2,8 @@
 
 namespace Controllers;
 
+use Constants\Rules;
+
 class PostController extends BaseController
 {
     protected array $validationSchema =
@@ -10,15 +12,15 @@ class PostController extends BaseController
             [
                 "url"=>
                 [
-                  "userId"=>["Integer"]
+                  "userId"=>[Rules::INTEGER]
                 ],
                 "query"=>
                 [
-                    "contentIsHtml"=>["Boolean"]
+                    "contentIsHtml"=>[Rules::BOOLEAN]
                 ],
                 "payload"=>
                 [
-                    "content"=>["Required","String"]
+                    "content"=>[Rules::REQUIRED,Rules::STRING]
                 ]
             ]
 

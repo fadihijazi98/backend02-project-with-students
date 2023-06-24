@@ -47,6 +47,8 @@ namespace Controllers;
     {
         $handler = key_exists($method,$this->handlerMap) ? $this->handlerMap[$method] : $method;
 
+        $arguments = $arguments[0];
+
         $handlerSchema = [];
 
         if(key_exists($handler,$this->validationSchema))
@@ -73,8 +75,8 @@ namespace Controllers;
         {
             return "No".$handler."is defined unfortunately :(";
         }
-
-        return ["data"=>$this->$handler(...$arguments)];
+        $argumentValues = array_values($arguments);
+        return ["data"=>$this->$handler(...$argumentValues)];
 
     }
 }

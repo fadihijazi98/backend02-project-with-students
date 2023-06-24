@@ -110,7 +110,8 @@ class Route
             {
                 if (str_starts_with($item, "{") && str_ends_with($item, "}"))
                 {
-                    $parameters[] = $requestPathParts[$index];
+                    $paramKey = substr($item,1,strlen($item)-2);
+                    $parameters[$paramKey] = $requestPathParts[$index];
                     continue;
                     /*
                       * 1. The continue statement represents the skip step for {id} item
@@ -178,7 +179,7 @@ class Route
                $requestMethod = $customHandler;
            }
 
-           return (new $controller())->$requestMethod(... $requestParams);
+           return (new $controller())->$requestMethod($requestParams);
        }
 
     }

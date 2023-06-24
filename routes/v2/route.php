@@ -14,12 +14,10 @@ catch (Exception $e)
 }
 
 Route::GET("users/{id}/posts/{id}/comments",UserController::class);
-Route::POST("users/{id}/posts",PostController::class);
+Route::POST("users/{userId}/posts",PostController::class);
 Route::GET("users",UserController::class);
-Route::GET("users/{id}",UserController::class);
 Route::POST("users",UserController::class);
-Route::PUT("users/{id}",UserController::class);
-Route::DELETE("users/{id}",UserController::class);
+
 
 /*
  * Calling these functions should be here in index.php because .htaccess
