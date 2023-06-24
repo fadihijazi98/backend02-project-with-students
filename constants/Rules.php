@@ -9,5 +9,4 @@ class Rules extends BaseConstant
     const BOOLEAN = "boolean";
     const STRING = "string";
     const REQUIRED = "required";
-    const EMAIL = "email";
 }

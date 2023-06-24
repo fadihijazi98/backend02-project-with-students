@@ -3,6 +3,7 @@
 namespace Components;
 
 use Constants\Rules;
+use Mixins\BasicRulesValidation;
 
 /**
  * Validation is for many types,
@@ -11,16 +12,40 @@ use Constants\Rules;
  */
 class Validator
 {
+    use BasicRulesValidation;
+
+    /**
+     * @throws \Exception
+     */
     public function __construct()
     {
+        $this->validateImplementedRulesConstants();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function validateRuleIsImplemented($rule, $exceptionMessage) {
+
+        $rule_method = "validate_rule_is_" . $rule;
+        if (! method_exists($this, $rule_method)) {
+
+            throw new \Exception($exceptionMessage);
+        }
+
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function validateImplementedRulesConstants() {
+
         $rules = (new Rules())->listOfExistsConstants();
         foreach ($rules as $rule) {
 
-            $rule_method = "validate_rule_is_" . $rule;
-            if (! method_exists($this, $rule_method)) {
-
-                throw new \Exception("Please sync your Rules constants with existing implementations in Validator component.");
-            }
+            $this->validateRuleIsImplemented(
+                $rule,
+                "Please sync your Rules constants with existing implementations in Validator component.");
         }
     }
 
@@ -36,11 +61,11 @@ class Validator
 
             foreach ($rules as $rule) {
 
-                $rule_method = "validate_rule_is_" . $rule;
-                if (! method_exists($this, $rule_method)) {
+                $this->validateRuleIsImplemented(
+                    $rule,
+                    "`$rule` isn't implemented, please use Rules constant class to skip this kind of errors.");
 
-                    throw new \Exception("`$rule` isn't implemented, please use Rules constant class to skip this kind of errors.");
-                }
+                $rule_method = "validate_rule_is_" . $rule;
                 $this->$rule_method($key, $value, $level);
             }
         }
@@ -51,6 +76,7 @@ class Validator
      * @param array $schema (associative array)
      * @param array $values (associative array)
      * @return void
+     * @throws \Exception
      */
     public function validateUrlVariables($schema, $values) {
 
@@ -62,6 +88,7 @@ class Validator
      * @param array $schema (associative array)
      * @param array $values (associative array)
      * @return void
+     * @throws \Exception
      */
     public function validateQueryParams($schema, $values) {
 
@@ -73,54 +100,10 @@ class Validator
      * @param array $schema (associative array)
      * @param array $values (associative array)
      * @return void
+     * @throws \Exception
      */
     public function validateRequestPayload($schema, $values) {
 
         $this->validate($schema, $values, "request payload level");
-    }
-
-    /**
-     * The implementation of `required` rule.
-     */
-    private function validate_rule_is_required($key, $value, $level) {
-
-        if ($value == null) {
-
-            throw new \Exception("`$key` (in $level) is required.");
-        }
-    }
-
-    /**
-     * The implementation of `string` rule.
-     */
-    private function validate_rule_is_string($key, $value, $level) {
-
-        if ($value != null && gettype($value) != 'string') {
-
-            throw new \Exception("$key (in $level) within value = $value should be string.");
-        }
-    }
-
-    /**
-     * The implementation of `integer` rule.
-     */
-    private function validate_rule_is_integer($key, $value, $level) {
-
-        if ($value != null && !ctype_digit("$value")) {
-
-            throw new \Exception("$key (in $level) within value = $value should be integer.");
-        }
-    }
-
-    /**
-     * The implementation of `boolean` rule.
-     */
-    private function validate_rule_is_boolean($key, $value, $level) {
-
-        $booleanValues = ["true", "false", true, false];
-        if ($value != null && ! in_array($value, $booleanValues, true)) {
-
-            throw new \Exception("$key (in $level) within value = $value should be boolean.");
-        }
     }
 }
