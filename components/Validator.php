@@ -40,7 +40,7 @@ class Validator
             $ruleMethod = "validateRuleIs".$rule;
             if(!method_exists($this,$ruleMethod))
             {
-                throw new Exception("'rule' method isn't implemented unfortunately :(, examine exist rules constants to reach exist rule methods");
+                throw new Exception("'$rule' method isn't implemented unfortunately :(, examine exist rules constants to reach exist rule methods");
             }
             $this->$ruleMethod($key,$value,$level);
         }
@@ -88,7 +88,8 @@ class Validator
      */
     private function validateRuleIsBoolean($key,$value,$level): void
     {
-        if($value!=null && !is_bool($value))
+        $booleanPossibleValues = ["true","false",true,false];
+        if($value!=null && !in_array($value,$booleanPossibleValues,true));
         {
             throw new Exception("'$key' within value = $value in $level level should be boolean dear user!!");
         }
