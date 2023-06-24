@@ -37,7 +37,7 @@ class Validator
      */
     private function validateRuleIsString($key,$value): void
     {
-        if($value!=null && !gettype($value))
+        if($value!=null && gettype($value) != "string")
         {
             throw new Exception("The datatype of $value should be string dear user!!");
         }
