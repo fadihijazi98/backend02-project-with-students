@@ -3,36 +3,55 @@
 namespace Components;
 
 use Constants\Rules;
+use Mixin\BasicRulesValidation;
 
 class Validator
 {
+    use BasicRulesValidation;
+
     /**
      * @throws \Exception
      */
     public function __construct()
     {
-        $rules = (new Rules())->listOfExistsConstants();
-
-        foreach ($rules as $rule){
-
-            $rule_method= "validate_rule_is_" . $rule;
-
-            if(!method_exists($this,$rule_method)){
-
-                throw new \Exception("Please sync your Rules constants with existing implementations in Validator component.");
-
-            }
-        }
+        $this->validateImplementedRulesConstants();
     }
 
     /**
      * @throws \Exception
      */
-    private function validate($schema, $values, $level){
+    private function validateRuleIsImplemented($rule, $exceptionMessage)
+    {
+
+        $rule_method = "validate_rule_is_" . $rule;
+
+        if (!method_exists($this, $rule_method)) {
+            throw new \Exception($exceptionMessage);
+        }
+    }
+
+    private function validateImplementedRulesConstants()
+    {
+
+        $rules = (new Rules())->listOfExistsConstants();
+        foreach ($rules as $rule) {
+
+            $this->validateRuleIsImplemented(
+                $rule,
+                "Please sync your Rules constants with existing implementations in Validator component.");
+        }
+    }
+
+
+    /**
+     * @throws \Exception
+     */
+    private function validate($schema, $values, $level)
+    {
 
         foreach ($schema as $key => $rules) {
 
-            $value =null;
+            $value = null;
 
             if (key_exists($key, $values)) {
                 $value = $values[$key];
@@ -40,11 +59,11 @@ class Validator
 
             foreach ($rules as $rule) {
 
-                $rule_method = "validate_rule_is_" . $rule;
-                if (! method_exists($this, $rule_method)) {
+                $this->validateRuleIsImplemented($rule,
+                    " $rule isn't implemented , please use rules constant class to skip this kind of errors.");
 
-                    throw new \Exception(" $rule isn't implemented , please use rules constant class to skip this kind of errors.");
-                }
+                $rule_method = "validate_rule_is_" . $rule;
+
                 $this->$rule_method($key, $value, $level);
             }
         }
@@ -69,38 +88,4 @@ class Validator
 
     }
 
-
-    private function validate_rule_is_required($key, $value, $level)
-    {
-        if ($value == null) {
-            throw new \Exception("the $key in $level is required! ");
-        }
-    }
-
-        private function validate_rule_is_string($key, $value,$level)
-        {
-            if ($value != null && gettype($value) != "string") {
-                throw new \Exception("$key in $level within value : $value should be string.");
-            }
-        }
-
-        private function validate_rule_is_integer($key, $value,$level)
-        {
-            if ($value != null && !ctype_digit("$value")) {
-                throw new \Exception("$key in $level within value : $value should be integer.");
-
-            }
-        }
-
-        private function validate_rule_is_boolean($key, $value,$level)
-        {
-            $booleanValues = ['true','false',true,false];
-
-            if ($value != null && !in_array($value,$booleanValues,true)) {
-                throw new \Exception("$key in $level within value : $value should be boolean.");
-
-            }
-        }
-
-
-    }
+}

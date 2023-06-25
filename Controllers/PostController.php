@@ -15,7 +15,8 @@ class PostController extends BaseController
                 "content_is_html" => [Rules::BOOLEAN]
             ],
             "payload"=>[
-                "content" => [Rules::REQUIRED, Rules::STRING]
+                "content" => [Rules::REQUIRED, Rules::STRING],
+                "is_admin" => [Rules::BOOLEAN]
             ]
         ]
     ];
