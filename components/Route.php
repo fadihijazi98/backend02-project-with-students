@@ -6,6 +6,7 @@ require "helpers/RequestHelper.php";
 
 use Helpers\RequestHelper;
 
+
 class Route
 {
     private static array $routes = [];

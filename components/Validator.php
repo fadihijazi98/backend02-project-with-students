@@ -3,13 +3,19 @@
 namespace Components;
 use Constants\Rules;
 use Exception;
+use Mixins\BasicRulesValidation;
 
 class Validator
 {
+    use BasicRulesValidation;
     /**
      * @throws Exception
      */
     public function __construct()
+    {
+        $this->validateImplementedRulesConstants();
+    }
+    private function validateImplementedRulesConstants()
     {
         $rules = (new Rules())->listOfExistConstants();
         foreach ($rules as $rule)
@@ -17,8 +23,20 @@ class Validator
             $ruleMethod = "validateRuleIs".$rule;
             if(!method_exists($this,$ruleMethod))
             {
-                throw new Exception("Desired method rule isn't implemented :(, try another one by examining exist rules constants!!");
+                $this->validateRuleIsImplemented($rule,"Desired method rule isn't implemented :(, try another one by examining exist rules constants!!");
             }
+        }
+    }
+    /**
+     * @throws Exception
+     */
+    private function validateRuleIsImplemented($rule, $exceptionMessage): void
+    {
+        $rule_method = "validateRuleIs".$rule;
+        if (! method_exists($this, $rule_method))
+        {
+
+            throw new \Exception($exceptionMessage);
         }
     }
 
@@ -40,7 +58,7 @@ class Validator
             $ruleMethod = "validateRuleIs".$rule;
             if(!method_exists($this,$ruleMethod))
             {
-                throw new Exception("'$rule' method isn't implemented unfortunately :(, examine exist rules constants to reach exist rule methods");
+                $this->validateRuleIsImplemented($rule,"'$rule' method isn't implemented unfortunately :(, examine exist rules constants to reach exist rule methods");
             }
             $this->$ruleMethod($key,$value,$level);
         }
@@ -58,52 +76,5 @@ class Validator
         $this->validate($schema,$values,"Request payload");
     }
 
-    /**
-     * Implementation of string rule method
-     * @throws Exception when the $value is not null and not string
-     */
-    private function validateRuleIsString($key,$value,$level): void
-    {
-        if($value!=null && gettype($value) != "string")
-        {
-            throw new Exception("'$key' within value = $value in $level level should be string dear user!!");
-        }
-    }
 
-    /**
-     * Implementation of integer rule method
-     * @throws Exception when the $value is null and not integer
-     */
-    private function validateRuleIsInteger($key,$value,$level): void
-    {
-        if($value!=null && !ctype_digit("$value"))
-        {
-            throw new Exception("'$key' within value = $value in $level level should be integer dear user!!");
-        }
-    }
-
-    /**
-     * Implementation of boolean rule method
-     * @throws Exception when the $value is not null and not boolean
-     */
-    private function validateRuleIsBoolean($key,$value,$level): void
-    {
-        $booleanPossibleValues = ["true","false",true,false];
-        if($value!=null && !in_array($value,$booleanPossibleValues,true));
-        {
-            throw new Exception("'$key' within value = $value in $level level should be boolean dear user!!");
-        }
-    }
-
-    /**
-     * Implementation of required rule method
-     * @throws Exception when the $value of $key is null
-     */
-    private function validateRuleIsRequired($key,$value,$level): void
-    {
-        if($value==null)
-        {
-            throw new Exception("'$key' in $level level is required dear user!!");
-        }
-    }
 }
