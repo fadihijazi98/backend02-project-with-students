@@ -2,8 +2,6 @@
 
 namespace Components;
 
-require "helpers/RequestHelper.php";
-
 use Helpers\RequestHelper;
 
 
