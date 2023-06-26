@@ -4,8 +4,26 @@ require 'vendor/autoload.php';
 require "routes/v1/route.php";
 require "routes/v2/route.php";
 
-// Defining each request and response to be always in JSON format (RESTFUL-API)
-header('Content-Type: application/json; charset=utf-8');
+use Illuminate\Database\Capsule\Manager as Capsule;
+
+
+$capsule = new Capsule();
+
+$capsule->addConnection(
+    [
+    'driver' => 'mysql',
+    'host' => '127.0.0.1',
+    'database' => 'Laragon.mySQL',
+    'username' => 'root',
+    'password' => '',
+    ]);
+
+$capsule->setAsGlobal();
+
+$capsule->bootEloquent();
+
+$users = Models\User::all();
+
 
 use Components\Route;
 
@@ -38,6 +56,7 @@ echo json_encode($response);
  */
 use Dotenv\Dotenv;
 Dotenv::createImmutable(__DIR__)->safeLoad();
-
+// Defining each request and response to be always in JSON format (RESTFUL-API)
+header('Content-Type: application/json; charset=utf-8');
 
 

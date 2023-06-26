@@ -1,6 +1,7 @@
 {
   "require": {
-    "vlucas/phpdotenv": "^5.5"
+    "vlucas/phpdotenv": "^5.5",
+    "illuminate/database": "^9.52"
   },
   "autoload": {
     "psr-4": {
@@ -8,7 +9,8 @@
       "Components\\": "components",
       "Helpers\\": "helpers",
       "Constants\\": "constants",
-      "Mixins\\": "mixin"
+      "Mixins\\": "mixin",
+      "Models\\": "models"
     }
   }
 }
