@@ -1,29 +1,8 @@
 <?php
 
-require 'vendor/autoload.php';
+require 'bootstrap.php';
 require "routes/v1/route.php";
 require "routes/v2/route.php";
-
-use Illuminate\Database\Capsule\Manager as Capsule;
-
-
-$capsule = new Capsule();
-
-$capsule->addConnection(
-    [
-    'driver' => 'mysql',
-    'host' => '127.0.0.1',
-    'database' => 'Laragon.mySQL',
-    'username' => 'root',
-    'password' => '',
-    ]);
-
-$capsule->setAsGlobal();
-
-$capsule->bootEloquent();
-
-$users = Models\User::all();
-
 
 use Components\Route;
 
