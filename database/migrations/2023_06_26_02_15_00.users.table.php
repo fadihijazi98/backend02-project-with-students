@@ -12,7 +12,7 @@ Manager::schema()->create("users", function (Blueprint $table) {
     $table->string("email", 250)->unique();
     $table->string("username", 250)->unique();
 
-    $table->string("profile_image", 500);
+    $table->string("profile_image", 500)->nullable();
     $table->string("password", 500);
 
     $table->timestamp("created")->useCurrent();

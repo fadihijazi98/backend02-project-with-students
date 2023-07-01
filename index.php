@@ -1,9 +1,10 @@
 <?php
 
 require 'bootstrap.php';
-
 header('Content-Type: application/json; charset=utf-8');
+
 use Components\Route;
+use Constants\StatusCodes;
 
 require 'routes/v1/route.php';
 
@@ -19,16 +20,18 @@ require 'routes/v1/route.php';
  */
 try {
 
-    $response = Route::handleRequest(); // route concept
+    $response = Route::handleRequest();
+    $code = StatusCodes::SUCCESS;
 }
-catch (Exception $e) {
+catch (Exception $exception) {
 
     $response = [
-        'message' => $e->getMessage()
+        'error' => $exception->getMessage()
     ];
-
+    $code = $exception->getCode() == 0 ? StatusCodes::SERVER_ERROR : $exception->getCode();
 }
 
+http_response_code($code);
 echo json_encode($response);
 
 
