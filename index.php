@@ -1,17 +1,19 @@
 <?php
+
+
 require 'vendor/autoload.php';
+use Controller\CommentsController;
+use Controller\LikesController;
+use component\Route;
+use Controller\UserController;
 
-/*
- * use Dotenv &
- * load environment variables.
- * use `$_ENV` to access variables.
- * (safeLoad) to skip exceptions if `.env` not exist
- */
-use Dotenv\Dotenv;
-Dotenv::createImmutable(__DIR__)->safeLoad();
 
-/*
- * define response to be always in JSON format (RESTFUL-API)
- */
-header('Content-Type: application/json; charset=utf-8');
+// CRUD operation ->  create , read , delete , update operation
+Route::GET("user/{id}/comment/{id}/post", UserController::class);
+Route::GET("users", UserController::class);
+Route::GET("users/{id}", UserController::class);
+Route::POST("users", UserController::class);
+Route::PUT("users/{id}", UserController::class);
+Route::DELETE("users/{id}", UserController::class);
 
+Route::handelRequest();
