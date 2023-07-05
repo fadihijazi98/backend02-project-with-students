@@ -1,6 +1,7 @@
 <?php
 require 'bootstrap.php';
 use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 $migrations = glob(__DIR__ . "/migrations/*");
 
@@ -12,6 +13,7 @@ foreach ($migrations as $migration){
     $script_name=array_pop($_);
 
     $table_name = explode(".",$script_name)[1];
+    var_dump(\Models\User::query()->findOrFail("3"));die();
 
     if (Manager::schema()->hasTable($table_name)){
         echo "$table_name table already exists !\n";
