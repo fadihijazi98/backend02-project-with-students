@@ -16,7 +16,7 @@ protected static function index($userId=00,$postId=00){
 return "hello from user Controller  , user #".$userId." post  #".$postId;
 }
 protected static function show($id){
-return " user derails for #$id";
+return " user data for #$id";
 }
 protected static function create(){
     return " create new user";
@@ -28,5 +28,8 @@ protected static function delete($id){
 return "user #$id delete successfully";
 }
 
+protected static function like($id){
+        return " user  #$id"." liked saleh post ";
+}
 
 }

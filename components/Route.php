@@ -2,6 +2,7 @@
 
 namespace component;
 use helpers\RequestHelper;
+use mysql_xdevapi\Exception;
 
 require "vendor/autoload.php";
 
@@ -24,8 +25,17 @@ require "vendor/autoload.php";
 class Route
 {
     private static $routes=[];
+    private static $version=1;
+
+    public static function setVersion($version_number){
+        if ($version_number==null || !is_integer($version_number)){
+            throw new Exception("[Bad Use] Version number cant be null or none integer .");
+        }
+        self::$version=$version_number;
+    }
 
     private static function register($path,$method,$controller,$custom_handler=null){
+        $path="api/v".self::$version."/".$path;
         self::$routes[$path][$method]["controller"]=$controller;
         self::$routes[$path][$method]["custom_handler"]=$custom_handler;
 
@@ -65,11 +75,11 @@ class Route
     public static function mapRequestWithMethod($request_path_parts )
     {
 
-        $isMatch=true;
         $params=[];
         foreach (self::$routes as $path => $methodController) {
-            $explode_registered_Path = explode("/", $path);
+            $isMatch=true;
 
+            $explode_registered_Path = explode("/", $path);
             if (sizeof($explode_registered_Path) != sizeof($request_path_parts)) {
 
             continue;
@@ -87,9 +97,12 @@ class Route
                     $isMatch = false;
                     break;
                 }
+
+
             }
 
             if ($isMatch) {
+
                 return
                         [
                            "path"=> $path,
