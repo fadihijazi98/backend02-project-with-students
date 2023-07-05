@@ -12,7 +12,7 @@ class UserController extends BaseController
      * [DELETE/user/{id}] delete resource by id
         * */
 
-protected static function index($userId,$postId){
+protected static function index($userId=00,$postId=00){
 return "hello from user Controller  , user #".$userId." post  #".$postId;
 }
 protected static function show($id){

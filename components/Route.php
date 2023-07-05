@@ -5,7 +5,7 @@ use helpers\RequestHelper;
 
 require "vendor/autoload.php";
 
-/*
+/**
  *
  * Request is a path and method.
  * Route is a map between Request & Controller.
@@ -25,23 +25,24 @@ class Route
 {
     private static $routes=[];
 
-    private static function register($path,$method,$controller){
-        self::$routes[$path][$method]=$controller;
-    }
-
-    public  static function GET($path,$controller){
-        self::$routes[$path]["GET"]=$controller;
-        self::register($path,"GET",$controller);
-    }
-    public static function POST($path,$controller){
-        self::register($path,"POST",$controller);
+    private static function register($path,$method,$controller,$custom_handler=null){
+        self::$routes[$path][$method]["controller"]=$controller;
+        self::$routes[$path][$method]["custom_handler"]=$custom_handler;
 
     }
-    public static function PUT($path,$controller){
-        self::register($path,"PUT",$controller);
+
+    public  static function GET($path,$controller,$custom_handler=null){
+        self::register($path,"GET",$controller,$custom_handler);
     }
-    public static function DELETE($path,$controller){
-        self::register($path,"DELETE",$controller);
+    public static function POST($path,$controller,$custom_handler=null){
+        self::register($path,"POST",$controller,$custom_handler);
+
+    }
+    public static function PUT($path,$controller,$custom_handler=null){
+        self::register($path,"PUT",$controller,$custom_handler);
+    }
+    public static function DELETE($path,$controller,$custom_handler=null){
+        self::register($path,"DELETE",$controller,$custom_handler);
     }
 
     public static function printRoutes(){
@@ -49,7 +50,7 @@ class Route
 
     }
 
-/*
+/**
  * the returned value structured like
  *
  *    [ "path" => String ,
@@ -112,7 +113,6 @@ class Route
         $path_parts=RequestHelper::getRequestUriAsArray(true);
 
         $mappedPathParams=self::mapRequestWithMethod($path_parts);
-
         $request_path=$mappedPathParams['path'];
         $request_params=$mappedPathParams['params'];
         $request_method = $_SERVER['REQUEST_METHOD'];
@@ -129,11 +129,15 @@ class Route
         }
 
         else {
+            $custom_handler=self::$routes[$request_path][$request_method]["custom_handler"];
+            $controller=self::$routes[$request_path][$request_method]["controller"];
 
-
-            $controller=self::$routes[$request_path][$request_method];
+            if ($custom_handler!=null) {
+                $request_method = $custom_handler;
+            }
 
                     /* @var array $request_params */
+
 
                     echo (new $controller())->$request_method(...$request_params);
 
