@@ -1,9 +1,26 @@
 <?php
 
 namespace component;
+use helpers\RequestHelper;
 
-use http\Url;
+require "vendor/autoload.php";
 
+/*
+ *
+ * Request is a path and method.
+ * Route is a map between Request & Controller.
+ * $routes structure:
+ *
+ * [
+ *      "path" => [
+ *          "method" => [
+ *                         "controller" => controller,
+ *                         "custom_handler" => handler
+ *                      ]
+ *                ], ....
+ * ]
+ *
+ */
 class Route
 {
     private static $routes=[];
@@ -32,38 +49,40 @@ class Route
 
     }
 
+/*
+ * the returned value structured like
+ *
+ *    [ "path" => String ,
+ *      "params" => string[]
+ *    ]
+ *
+ * @param string[] $request_path_parts
+ * @return string[]
+ *
+ * */
 
-
-    public static function mapRequestWithMethod($requestUrl )
+    public static function mapRequestWithMethod($request_path_parts )
     {
 
-        $parts = explode('/', $requestUrl);
-        unset($parts[0]);
-        unset($parts[1]);
-        $requestPath = join('/', $parts);
-
-        $isMatch = true;
-        $params = [];
-        $tempPath="";
-
+        $isMatch=true;
+        $params=[];
         foreach (self::$routes as $path => $methodController) {
-            $explodeRequestPath = explode("/", $requestPath);
-            $explodeTargetPath = explode("/", $path);
+            $explode_registered_Path = explode("/", $path);
 
+            if (sizeof($explode_registered_Path) != sizeof($request_path_parts)) {
 
-            if (sizeof($explodeRequestPath) != sizeof($explodeTargetPath)) {
-                continue;
+            continue;
             }
 
 
-            foreach ($explodeTargetPath as $index => $item) {
+            foreach ($explode_registered_Path as $index => $item) {
 
                 if (str_starts_with($item, "{") && str_ends_with($item, "}")) {
-                    $params[] = $explodeRequestPath[$index];
+                    $params[] = $request_path_parts[$index];
                     continue;
                 }
 
-                if ($item != $explodeRequestPath[$index]) {
+                if ($item != $request_path_parts[$index]) {
                     $isMatch = false;
                     break;
                 }
@@ -71,10 +90,10 @@ class Route
 
             if ($isMatch) {
                 return
-                    [
-                       "path"=> $path,
-                        "params"=>$params
-                    ];
+                        [
+                           "path"=> $path,
+                           "params"=>$params
+                        ];
 
             }
 
@@ -84,16 +103,19 @@ class Route
             "params"=>""
         ];
 
-
     }
 
 
 
     public static function handelRequest(){
 
-        $requestUrl=$_SERVER['REQUEST_URI'];
-        $requestMethod = $_SERVER['REQUEST_METHOD'];
-        $mappedPathParams=self::mapRequestWithMethod($requestUrl);
+        $path_parts=RequestHelper::getRequestUriAsArray(true);
+
+        $mappedPathParams=self::mapRequestWithMethod($path_parts);
+
+        $request_path=$mappedPathParams['path'];
+        $request_params=$mappedPathParams['params'];
+        $request_method = $_SERVER['REQUEST_METHOD'];
 
 
         if (empty($mappedPathParams))
@@ -102,29 +124,21 @@ class Route
             return;
         }
 
-        $path=$mappedPathParams['path'];
-        $params=$mappedPathParams['params'];
+        if (!key_exists($request_method,self::$routes[$request_path])){
+            echo "request isn't registered with  ".$request_method." method  ";
+        }
+
+        else {
 
 
-        foreach (  self::$routes[$path] as $method => $controller){
+            $controller=self::$routes[$request_path][$request_method];
 
-                if( $requestMethod == $method)
-                {
+                    /* @var array $request_params */
 
-                   echo (new $controller())->$method(...$params);
-
-                    return;
-
-                }
+                    echo (new $controller())->$request_method(...$request_params);
 
         }
-        echo "request doesn't support  ".$requestMethod." as request method ";
-
 
 
     }
-
-
-
-
 }
