@@ -4,7 +4,8 @@ namespace Controller;
 
 class CommentsController
 {
-    public static function index(){
+    public static function index()
+    {
         return 'comments page ';
 
     }

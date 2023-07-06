@@ -2,6 +2,8 @@
 
 namespace Controller;
 
+use helpers\RequestHelper;
+
 class UserController extends BaseController
 {
     /*
@@ -12,24 +14,50 @@ class UserController extends BaseController
      * [DELETE/user/{id}] delete resource by id
         * */
 
-protected static function index($userId=00,$postId=00){
-return "hello from user Controller  , user #".$userId." post  #".$postId;
-}
-protected static function show($id){
-return " user data for #$id";
-}
-protected static function create(){
-    return " create new user";
-}
-protected static function update($id){
-return "user #$id update successfully";
-}
-protected static function delete($id){
-return "user #$id delete successfully";
-}
+    protected static function index()
+    {
+        return [[
 
-protected static function like($id){
-        return " user  #$id"." liked saleh post ";
-}
+            "id" => "1",
+            "name" => "saleh",
+            "email" => "saleh@gmail.com"
+
+        ],
+            [
+
+
+                "id" => "2",
+                "name" => "mhmd",
+                "email" => "mhmd@gmail.com"
+
+            ]
+        ];
+    }
+
+    protected static function show($id)
+    {
+        return " user data for #$id";
+    }
+
+    protected static function create()
+    {
+        $data=RequestHelper::getRequestPayload();
+        return " create new user has phone : ". $data["phone"];
+    }
+
+    protected static function update($id)
+    {
+        return "user #$id update successfully";
+    }
+
+    protected static function delete($id)
+    {
+        return "user #$id delete successfully";
+    }
+
+    protected static function like($id)
+    {
+        return " user  #$id" . " liked saleh post ";
+    }
 
 }

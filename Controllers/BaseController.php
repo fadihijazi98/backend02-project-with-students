@@ -36,9 +36,9 @@ abstract class  BaseController
 
         $handler=(key_exists($method,$this->handlerMap))?$this->handlerMap[$method]:$method;
         if (!method_exists($this,$handler)){
-            return "no ".$handler ." defined as handler ";
+            return ["message"=>"no ".$handler ." defined as handler "];
         }
-        return  $this->$handler(...$arguments );
+        return["data"=>  $this->$handler(...$arguments )];
     }
 }
 

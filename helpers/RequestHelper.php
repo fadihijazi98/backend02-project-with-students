@@ -1,7 +1,7 @@
 <?php
 
 namespace helpers;
-/*
+/**
  * Split the uri path into parts (array),
  * Note: if you need uri path without domain, set the `$excludeDomain` arg as true.
  *
@@ -26,6 +26,26 @@ class RequestHelper
        }
 
         return $exploded_request_path;
+    }
+
+
+    /**
+     * Get data that  sent  as row string in json format
+     *
+     * to get as associative array represent the request payload data
+     *
+     * @return array
+     *
+     * */
+    public static function getRequestPayload(){
+        $data_as_string_in_json_format=file_get_contents("php://input");
+
+        if (! $data_as_string_in_json_format)
+            return [];
+
+        return json_decode($data_as_string_in_json_format,true);
+
+
     }
 
 }
