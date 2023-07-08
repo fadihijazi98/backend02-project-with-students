@@ -4,13 +4,17 @@ namespace Helpers;
 class RequestHelper
 {
 
+    public static function getRequestUri() {
+
+        return $_SERVER['REQUEST_URI'];
+    }
+
     /**
-     * @param $uri
      * @return string
      */
-    public static function getUriWithoutQueryParams($uri) {
+    public static function getUriWithoutQueryParams() {
 
-        $exploded_request_path_and_query_params = explode("?", $uri);
+        $exploded_request_path_and_query_params = explode("?", self::getRequestUri());
         return array_shift($exploded_request_path_and_query_params);
     }
 
@@ -54,5 +58,18 @@ class RequestHelper
             return [];
         }
         return json_decode($data_as_string_in_json_format, true);
+    }
+
+    public static function extractResourceIdFromRequestPath() {
+
+        $path_parts = self::getRequestUriAsArray(self::getRequestUri());
+
+        $resource = array_pop($path_parts);
+        if (ctype_digit($resource)) {
+
+            return $resource;
+        }
+
+        return null;
     }
 }

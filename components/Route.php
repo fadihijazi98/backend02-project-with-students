@@ -189,7 +189,7 @@ class Route {
 
     public static function handleRequest() {
 
-        $uri = RequestHelper::getUriWithoutQueryParams($_SERVER['REQUEST_URI']);
+        $uri = RequestHelper::getUriWithoutQueryParams();
 
         $path_parts = RequestHelper::getRequestUriAsArray($uri, true);
         $mapped_path_params = self::mapPathWithParams($path_parts);
