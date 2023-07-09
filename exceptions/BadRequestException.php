@@ -3,7 +3,6 @@
 namespace CustomExceptions;
 
 use Constants\ResponseStatusCodes;
-use Constants\StatusCodes;
 use Exception;
 
 class BadRequestException extends Exception

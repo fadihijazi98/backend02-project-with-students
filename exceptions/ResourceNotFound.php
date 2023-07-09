@@ -3,8 +3,8 @@
 namespace CustomExceptions;
 
 use Constants\ResponseStatusCodes;
-use Constants\StatusCodes;
 use Exception;
+
 class ResourceNotFound extends Exception
 {
     public function __construct()
