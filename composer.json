@@ -10,7 +10,8 @@
       "Helpers\\": "helpers",
       "Constants\\": "constants",
       "Mixins\\": "mixin",
-      "Models\\": "models"
+      "Models\\": "models",
+      "CustomExceptions\\": "exceptions"
     }
   }
 }

@@ -3,6 +3,7 @@
 namespace Mixins;
 
 use Exception;
+use CustomExceptions\BadRequestException;
 
 trait BasicRulesValidation
 {
@@ -14,7 +15,7 @@ trait BasicRulesValidation
     {
         if($value!=null && gettype($value) != "string")
         {
-            throw new Exception("'$key' within value = $value in $level level should be string dear user!!");
+            throw new BadRequestException("'$key' within value = $value in $level level should be string dear user!!");
         }
     }
 
@@ -26,7 +27,7 @@ trait BasicRulesValidation
     {
         if($value!=null && !ctype_digit("$value"))
         {
-            throw new Exception("'$key' within value = $value in $level level should be integer dear user!!");
+            throw new BadRequestException("'$key' within value = $value in $level level should be integer dear user!!");
         }
     }
 
@@ -39,7 +40,7 @@ trait BasicRulesValidation
         $booleanPossibleValues = ["true","false",true,false];
         if($value!=null && !in_array($value,$booleanPossibleValues,true));
         {
-            throw new Exception("'$key' within value = $value in $level level should be boolean dear user!!");
+            throw new BadRequestException("'$key' within value = $value in $level level should be boolean dear user!!");
         }
     }
 
@@ -51,7 +52,7 @@ trait BasicRulesValidation
     {
         if($value==null)
         {
-            throw new Exception("'$key' in $level level is required dear user!!");
+            throw new BadRequestException("'$key' in $level level is required dear user!!");
         }
     }
 }

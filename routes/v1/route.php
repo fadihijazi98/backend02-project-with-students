@@ -1,26 +1,15 @@
 <?php
 
-use Controllers\LikeController;
-use Controllers\CommentController;
 use Components\Route;
+use Controllers\UserController;
 
-try
-{
-    Route::setVersion(1);
-}
-catch (Exception $e)
-{
 
-}
+Route::GET("users", UserController::class);
 
-Route::GET("posts/5/comments",CommentController::class);
-Route::GET("posts/5/likes",LikeController::class);
-Route::POST("posts/5/comments",CommentController::class);
-Route::POST("posts/5/likes",LikeController::class);
+Route::GET("users/{id}", UserController::class, "show");
 
-/*
- * Calling these functions should be here in index.php because .htaccess
- * will return the path which its folder and file doesn't exist
- * to index.php,but after that we moved it into versions so it
- * shouldn't be in index.php
- */
+Route::POST("users", UserController::class);
+
+Route::PUT("users/{id}", UserController::class);
+
+Route::DELETE("users/{id}", UserController::class);

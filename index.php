@@ -2,22 +2,28 @@
 
 require 'bootstrap.php';
 require "routes/v1/route.php";
-require "routes/v2/route.php";
 
 use Components\Route;
+use Constants\ResponseStatusCodes;
 
 try
 {
     $response = Route::handleRequest();
+    $code = ResponseStatusCodes::SUCCESS;
 }
+
 catch(Exception $exception)
 {
     $response =
         [
-        'message'=>$exception->getMessage()
+        'Error'=>$exception->getMessage()
         ];
     //To let things clear to the front-end developer, we made exception as $response in json format
+    $code = $exception->getCode() == 0 ? ResponseStatusCodes::SERVER_ERROR : $exception->getCode();
 }
+
+http_response_code($code);
+
 echo json_encode($response);
 //Either $response is normal or is exception, json_encode() will invert it into json format
 // We used echo because handleRequest method only return array as value and doesn't print it

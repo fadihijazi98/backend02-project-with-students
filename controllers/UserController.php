@@ -3,46 +3,99 @@
 namespace Controllers;
 
 use Helpers\RequestHelper;
+use Constants\Rules;
+use CustomExceptions\BadRequestException;
+use CustomExceptions\ResourceNotFound;
+use Models\User;
 
 class UserController extends BaseController
 {
-   protected function index(): array
-   {
-       return [
-
-           [
-               "id"=>"1",
-               "username"=>"Jamila"
-           ]
-           ,
-           [
-               "id"=>"2",
-               "username"=>"Abdullah"
-           ]
-       ];
-   }
-    protected function show($userId): array
-    {
-        return [
-            "data"=>
+    protected array $validationSchema =
+        [
+         "create" =>
+             [
+            "payload" =>
+                [
+                "name" => [Rules::REQUIRED, Rules::STRING],
+                "email" => [Rules::REQUIRED, Rules::STRING],
+                "username" => [Rules::REQUIRED, Rules::STRING],
+                "password" => [Rules::REQUIRED, Rules::STRING],
+                "profile_image" => [Rules::STRING],
+                ]
+            ],
+        "update" =>
             [
-                "id"=>$userId,
-                "username"=>"Jamila"
+            "payload" =>
+                [
+                "name" => [Rules::STRING],
+                "email" => [Rules::STRING],
+                "username" => [Rules::STRING],
+                "profile_image" => [Rules::STRING],
+                ]
             ]
-        ];
+    ];
+
+    protected function index()
+    {
+        return User::all("id", "username");
+    }
+
+    protected function show($id)
+    {
+        $user =  User::query()->find($id);
+        if (! $user)
+        {
+
+            throw new ResourceNotFound();
+        }
+
+        return $user;
+    }
+
+    protected function create()
+    {
+
+        $payload = RequestHelper::getRequestPayload();
+
+        $payload["password"] = md5($payload["password"]);
+
+        $user = User::create($payload);
+        return
+            [
+            "id" => $user->id
+            ];
+    }
+
+    protected function update($id)
+    {
+        $payload = RequestHelper::getRequestPayload();
+
+        if (key_exists("password", $payload))
+        {
+
+            throw new BadRequestException("Password can't be updated by this API unfortunately :(");
+        }
+
+        $user = $this->show($id);
+
+        $user->update($payload);
+
+        return
+            [
+            "message" => "Data was updated successfully :)"
+            ];
 
     }
-    public function create(): string
+
+    protected function delete($id)
     {
-        $data = RequestHelper::getRequestPayLoad();
-        return "New user with " .$data["username"]." was successfully been added :)";
-    }
-    public function update($userId): string
-    {
-        return "User's data whose id = $userId was successfully been updated :)";
-    }
-    public function delete($userId): string
-    {
-        return "User's data whose id = $userId was successfully been deleted :)";
+        $user =  $this->show($id);
+
+        $user->delete();
+
+        return
+            [
+            "message" => "Data was deleted successfully :)"
+           ];
     }
 }
