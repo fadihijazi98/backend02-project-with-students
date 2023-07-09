@@ -110,7 +110,9 @@ class Route
             foreach ($explode_registered_Path as $index => $item) {
 
                 if (str_starts_with($item, "{") && str_ends_with($item, "}")) {
-                    $params[] = $request_path_parts[$index];
+                    $key_param=substr($item,1,strlen($item)-2);
+                    $params[$key_param] = $request_path_parts[$index];
+
                     continue;
                 }
 
@@ -152,6 +154,7 @@ class Route
         $request_method = $_SERVER['REQUEST_METHOD'];
 
 
+
         if (empty($mappedPathParams)) {
             return [" message" => "Request not found"];
 
@@ -167,10 +170,11 @@ class Route
                 $request_method = $custom_handler;
             }
 
+
             /* @var array $request_params */
 
 
-            return (new $controller())->$request_method(...$request_params);
+            return (new $controller())->$request_method($request_params);
 
         }
 

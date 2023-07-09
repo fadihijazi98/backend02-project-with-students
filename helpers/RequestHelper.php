@@ -18,7 +18,11 @@ class RequestHelper
 
 
     public static function getRequestUriAsArray($excludeDomain=false){
-        $exploded_request_path=explode("/",$_SERVER["REQUEST_URI"]);
+        $request_uri=$_SERVER["REQUEST_URI"];
+        $parse_url=parse_url($request_uri);
+        $exploded_request_path=explode("/",$parse_url["path"]);
+
+
         array_shift($exploded_request_path);
 
        if ($excludeDomain) {
