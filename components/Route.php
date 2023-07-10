@@ -3,7 +3,6 @@
 namespace component;
 
 use helpers\RequestHelper;
-use mysql_xdevapi\Exception;
 
 require "vendor/autoload.php";
 
@@ -48,7 +47,7 @@ class Route
     public static function setVersion($version_number)
     {
         if ($version_number == null || !is_integer($version_number)) {
-            throw new Exception("[Bad Use] Version number cant be null or none integer .");
+            throw new \Exception("[Bad Use] Version number cant be null or none integer .");
         }
         self::$version = $version_number;
     }
@@ -171,7 +170,10 @@ class Route
             }
 
 
+
+
             /* @var array $request_params */
+
 
 
             return (new $controller())->$request_method($request_params);

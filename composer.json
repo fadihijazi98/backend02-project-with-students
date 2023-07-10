@@ -1,13 +1,16 @@
 {
   "require": {
-    "vlucas/phpdotenv": "^5.5"
+    "vlucas/phpdotenv": "^5.5",
+    "illuminate/database": "v8.83.27"
   },
   "autoload": {
     "psr-4": {
       "Controller\\": "Controllers",
       "component\\": "components",
       "helpers\\": "helpers",
-      "constants\\": "constants"
+      "constants\\": "constants",
+      "Mixins\\": "mixin"
+
     }
   }
 }

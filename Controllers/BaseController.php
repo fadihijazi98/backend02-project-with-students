@@ -2,7 +2,7 @@
 
 namespace Controller;
 
-use constants\constant;
+use constants\Rules;
 use component\Validator;
 use helpers\RequestHelper;
 
@@ -63,24 +63,24 @@ public function __construct(){
 
         // validate url variables
 
-        if (key_exists(constant::URL,$schema[$handler])){
+        if (key_exists("url",$schema[$handler])){
 
-            $this->validator->validateUrlVariables($schema[$handler][constant::URL],$arguments,"url variables level ");
+            $this->validator->validateUrlVariables($schema[$handler]["url"],$arguments,"url variables level ");
         }
 
         //validate query params
 
-        if (key_exists(constant::QUERY,$schema[$handler])){
+        if (key_exists("query",$schema[$handler])){
 
             $values=$_GET;
-            $this->validator->validateQueryParams($schema[$handler][constant::QUERY],$values,"query params level ");
+            $this->validator->validateQueryParams($schema[$handler]["query"],$values,"query params level ");
         }
 
         //validate payload data
 
-        if (key_exists(constant::PAYLOAD,$schema[$handler])){
+        if (key_exists("payload",$schema[$handler])){
 
-            $this->validator->validatePayloadData($schema[$handler][constant::PAYLOAD],RequestHelper::getRequestPayload()," payload data level ");
+            $this->validator->validatePayloadData($schema[$handler]["payload"],RequestHelper::getRequestPayload()," payload data level ");
         }
 
 

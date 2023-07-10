@@ -2,24 +2,59 @@
 
 namespace component;
 
+use constants\Rules;
 use Controller\UserController;
+use Mixins\BasicRulesValidation;
+use mysql_xdevapi\Exception;
 
 class Validator
 {
 
+    use BasicRulesValidation;
+    public function __construct()
+    {
+      $this->validateImplementedRulesByConstants();
+    }
+
+
+    /**
+     *
+     * @throws \Exception
+     * */
+    private  function validateImplementedRulesByConstants(){
+        $rules=(new Rules())->listOfExistConstant();
+        foreach ($rules as $rule){
+            $this->validateRuleIsImplemented($rule
+                ,"Please sync your Rules constants with existing implementations in Validator component.");
+        }
+    }
+
+    /**
+     *
+     * @throws \Exception
+     * */
+    private  function validateRuleIsImplemented($rule, $messageException){
+        if (!method_exists($this,"validate_rule_is_".$rule)){
+            throw new \Exception(  $messageException);
+        }
+    }
+
+    /**
+     *
+     * represent shared validation data method
+     *
+     * @throws \Exception
+     * */
 
     public static function validate($schema, $values, $level)
     {
         foreach ($schema as $key => $rules) {
 
-
             $value = null;
-
 
             if (key_exists($key, $values)) {
                 $value = $values[$key];
             }
-
 
             foreach ($rules as $rule) {
                 $rule_method = "validate_rule_is_" . $rule;
@@ -37,11 +72,15 @@ class Validator
      *
      * @return void
      *
+     * @throws \Exception
+     *
      * */
 
     public static function validateUrlVariables($schema, $values, $level)
     {
+
         self::validate($schema, $values, $level);
+
     }
 
     /**
@@ -53,6 +92,7 @@ class Validator
      *
      * @return void
      *
+     * @throws \Exception
      * */
 
     public static function validateQueryParams($schema, $values, $level)
@@ -71,50 +111,14 @@ class Validator
      *
      * @return void
      *
+     * @throws \Exception
+     *
      * */
     public static function validatePayloadData($schema, $values, $level)
     {
         self::validate($schema, $values, $level);
     }
 
-   /**
-    * the implementation of 'required' rule.
-    * */
-    public static function validate_rule_is_boolean($key, $value, $level)
-
-    {
-        $booleanValue = ["true", "false", true, false];
-
-        if ($value!=null && !in_array($value, $booleanValue,true)) {
-
-            throw new \Exception("The value #$value in $level must be boolean value false or true .", 300);
-        }
-    }
-
-    public static function validate_rule_is_integer($key, $value, $level)
-    {
-        if ($value != null && !ctype_digit("$value")) {
-
-
-            throw new \Exception("The value #$value in $level must be an integer.", 500);
-        }
-    }
-
-    public static function validate_rule_is_string($key, $value, $level)
-    {
-        if ($value != null && !is_string($value))
-            throw new \Exception("The value #$value in $level must be a string .", 300);
-
-    }
-
-    public static function validate_rule_is_required($key, $value, $level)
-    {
-
-        if (!$value)
-            throw new \Exception("The value of \" $key \" cannot be null in $level.", 500);
-
-
-    }
 
 
 }

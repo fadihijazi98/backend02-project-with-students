@@ -2,15 +2,14 @@
 
 namespace constants;
 
-class constant
+class Rules extends BaseConstants
 {
     const INTEGER="integer";
     const STRING="string";
     const BOOLEAN="boolean";
     const REQUIRED="required";
-    const URL="url";
-    const QUERY="query";
-    const PAYLOAD="payload";
+
+
 
 
 }

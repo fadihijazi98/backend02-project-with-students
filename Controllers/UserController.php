@@ -3,7 +3,7 @@
 namespace Controller;
 
 use helpers\RequestHelper;
-use constants\constant;
+use constants\Rules;
 
 class UserController extends BaseController
 {
@@ -13,34 +13,34 @@ class UserController extends BaseController
         "create" => [
 
             "url" => [
-                "userId" => [constant::INTEGER]
+                "userId" => [Rules::INTEGER]
             ],
             "query" => [
-                "content_is_html" => [constant::BOOLEAN]
+                "content_is_html" => [Rules::BOOLEAN]
             ],
             "payload" => [
-                "userId" => [constant::INTEGER],
-                "userName" => [constant::STRING],
-                "email" => [constant::STRING],
-                "phone" => [constant::STRING, constant::REQUIRED],
-                "isAdmin" => [constant::BOOLEAN]
+                "userId" => [Rules::INTEGER],
+                "userName" => [Rules::STRING],
+                "email" => [Rules::STRING],
+                "phone" => [Rules::STRING, Rules::REQUIRED],
+                "isAdmin" => [Rules::BOOLEAN]
             ]
         ],
         "show" => [
 
             "url" => [
-                "userId" => [constant::INTEGER,constant::REQUIRED],
-                "postId"=>[constant::INTEGER]
+                "userId" => [Rules::INTEGER,Rules::REQUIRED],
+                "postId"=>[Rules::INTEGER]
             ],
             "query" => [
-                "content_is_html" => [constant::BOOLEAN]
+                "content_is_html" => [Rules::BOOLEAN]
             ],
             "payload" => [
-                "userId" => [constant::INTEGER],
-                "userName" => [constant::STRING],
-                "email" => [constant::STRING],
-                "phone" => [constant::STRING, constant::REQUIRED],
-                "isAdmin" => [constant::BOOLEAN]
+                "userId" => [Rules::INTEGER],
+                "userName" => [Rules::STRING],
+                "email" => [Rules::STRING],
+                "phone" => [Rules::STRING, Rules::REQUIRED],
+                "isAdmin" => [Rules::BOOLEAN]
             ]
 
 
