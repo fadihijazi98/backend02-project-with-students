@@ -9,7 +9,8 @@
       "component\\": "components",
       "helpers\\": "helpers",
       "constants\\": "constants",
-      "Mixins\\": "mixin"
+      "Mixins\\": "mixin",
+      "Models\\": "model"
 
     }
   }
