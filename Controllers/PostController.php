@@ -2,6 +2,7 @@
 
 namespace Controllers;
 use Constants\Rules;
+use Models\Post;
 
 class PostController extends BaseController
 {
@@ -15,8 +16,11 @@ class PostController extends BaseController
                 "content_is_html" => [Rules::BOOLEAN]
             ],
             "payload"=>[
-                "content" => [Rules::REQUIRED, Rules::STRING],
-                "is_admin" => [Rules::BOOLEAN]
+                "content" => [
+                    Rules::REQUIRED,
+                    Rules::STRING,
+                    Rules::UNIQUE => ["model"=> Post::class]
+                ]
             ]
         ]
     ];

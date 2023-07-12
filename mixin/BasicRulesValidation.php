@@ -5,8 +5,9 @@ use CustomExceptions\BadRequestException;
 
 trait BasicRulesValidation
 {
+
     /**
-     * @throws \Exception
+     * @throws BadRequestException
      */
     private function validate_rule_is_required($key, $value, $level)
     {
@@ -15,8 +16,9 @@ trait BasicRulesValidation
         }
     }
 
+
     /**
-     * @throws \Exception
+     * @throws BadRequestException
      */
     private function validate_rule_is_string($key, $value, $level)
     {
@@ -25,8 +27,9 @@ trait BasicRulesValidation
         }
     }
 
+
     /**
-     * @throws \Exception
+     * @throws BadRequestException
      */
     private function validate_rule_is_integer($key, $value, $level)
     {
@@ -36,8 +39,9 @@ trait BasicRulesValidation
         }
     }
 
+
     /**
-     * @throws \Exception
+     * @throws BadRequestException
      */
     private function validate_rule_is_boolean($key, $value, $level)
     {

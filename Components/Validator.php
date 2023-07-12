@@ -4,14 +4,15 @@ namespace Components;
 
 use Constants\Rules;
 use Mixin\BasicRulesValidation;
+use Illuminate\Database\Eloquent\Model;
+use Mixin\DatabaseRulesValidation;
+use Models\User;
 
 class Validator
 {
-    use BasicRulesValidation;
+    use BasicRulesValidation,DatabaseRulesValidation;
 
-    /**
-     * @throws \Exception
-     */
+
     public function __construct()
     {
         $this->validateImplementedRulesConstants();
@@ -57,14 +58,29 @@ class Validator
                 $value = $values[$key];
             }
 
-            foreach ($rules as $rule) {
+            foreach ($rules as $specialRule => $rule){
+
+                $arguments = [$key,$value,$level];
+
+                if(is_array($rule) && $rule == Rules::UNIQUE){
+
+                    throw new \Exception("UNIQUE Rule should have another level of data having `model` value.");
+
+                }else if (is_array($rule)) {
+
+                    if (key_exists("model", $rule)) {
+
+                        $arguments[] = $rule["model"];
+                    }
+                    $rule = $specialRule;
+                }
 
                 $this->validateRuleIsImplemented($rule,
                     " $rule isn't implemented , please use rules constant class to skip this kind of errors.");
 
                 $rule_method = "validate_rule_is_" . $rule;
 
-                $this->$rule_method($key, $value, $level);
+                $this->$rule_method(... $arguments);
             }
         }
     }

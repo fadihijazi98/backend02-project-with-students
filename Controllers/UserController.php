@@ -13,22 +13,44 @@ class UserController extends BaseController
         "create"=>[
             "payload"=>[
                 "name"=>[Rules::REQUIRED,Rules::STRING],
-                "username"=>[Rules::REQUIRED,Rules::STRING],
+                "username"=>[
+                    Rules::REQUIRED,
+                    Rules::STRING,
+                    Rules::UNIQUE => [
+                        "model" => User::class
+                    ]
+                ],
                 "password"=>[Rules::REQUIRED,Rules::STRING],
-                "email"=>[Rules::REQUIRED,Rules::STRING],
+                "email"=>[
+                    Rules::REQUIRED,
+                    Rules::STRING,
+                    Rules::UNIQUE=> [
+                        "model" => User::class
+                        ]
+                ],
                 "profile_img"=>[Rules::STRING]
             ]
         ],
-        "update"=>[
-            "payload"=>[
-                "name"=>[Rules::STRING],
-                "username"=>[Rules::STRING],
-                "email"=>[Rules::STRING],
-                "profile_img"=>[Rules::STRING]
+        "update" => [
+            "payload" => [
+                "name" => [Rules::STRING],
+                "email" => [
+                    Rules::STRING,
+                    Rules::UNIQUE => [
+                        "model" => User::class
+                    ]
+                ],
+                "username" => [
+                    Rules::STRING,
+                    Rules::UNIQUE => [
+                        "model" => User::class
+                    ]
+                ],
+                "profile_image" => [Rules::STRING],
             ]
         ]
-
     ];
+
     protected function index(){
 
         return User::all("id","username","profile_img");

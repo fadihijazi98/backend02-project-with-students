@@ -8,5 +8,6 @@ class Rules extends BaseConstant
     const INTEGER = "integer";
     const BOOLEAN = "boolean";
     const REQUIRED = "required";
+    const UNIQUE = "unique";
 
 }
