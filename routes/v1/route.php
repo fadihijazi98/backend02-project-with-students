@@ -2,6 +2,7 @@
 
 use Controllers\userController;
 use Components\Route;
+use Controllers\PostController;
 
 Route::GET("users", UserController::class);
 Route::GET("users/{id}", UserController::class, "show");

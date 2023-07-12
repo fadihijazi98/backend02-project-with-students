@@ -42,8 +42,8 @@ class RequestHelper
     public static function extractResourceIdFromRequestPath() {
 
         $path_parts = self::getRequestUriAsArray(self::getRequestUri());
-
         $resource = array_pop($path_parts);
+
         if (ctype_digit($resource)) {
 
             return $resource;
