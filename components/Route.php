@@ -99,17 +99,22 @@ class Route
         foreach (self::$routes as $path => $methodController) {
             $isMatch = true;
 
+
             $explode_registered_Path = explode("/", $path);
+
             if (sizeof($explode_registered_Path) != sizeof($request_path_parts)) {
+
+
 
                 continue;
             }
 
 
+
             foreach ($explode_registered_Path as $index => $item) {
 
                 if (str_starts_with($item, "{") && str_ends_with($item, "}")) {
-                    $key_param=substr($item,1,strlen($item)-2);
+                    $key_param = substr($item, 1, strlen($item) - 2);
                     $params[$key_param] = $request_path_parts[$index];
 
                     continue;
@@ -122,6 +127,7 @@ class Route
 
 
             }
+
 
             if ($isMatch) {
 
@@ -153,10 +159,8 @@ class Route
         $request_method = $_SERVER['REQUEST_METHOD'];
 
 
-
         if (empty($mappedPathParams)) {
             return [" message" => "Request not found"];
-
         }
 
         if (!key_exists($request_method, self::$routes[$request_path])) {
@@ -169,12 +173,7 @@ class Route
                 $request_method = $custom_handler;
             }
 
-
-
-
             /* @var array $request_params */
-
-
 
             return (new $controller())->$request_method($request_params);
 

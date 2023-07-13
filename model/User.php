@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-    protected $table ="users";
-/*    protected $attributes=*/
 
+    protected $hidden =["password"];
+    protected $guarded =['id'];
+    public $timestamps=false;
 }

@@ -48,17 +48,19 @@ class Validator
 
     public static function validate($schema, $values, $level)
     {
-        foreach ($schema as $key => $rules) {
+        if ($schema!=null) {
+            foreach ($schema as $key => $rules) {
 
-            $value = null;
+                $value = null;
 
-            if (key_exists($key, $values)) {
-                $value = $values[$key];
-            }
+                if (key_exists($key, $values)) {
+                    $value = $values[$key];
+                }
 
-            foreach ($rules as $rule) {
-                $rule_method = "validate_rule_is_" . $rule;
-                Validator::$rule_method($key, $value, $level);
+                foreach ($rules as $rule) {
+                    $rule_method = "validate_rule_is_" . $rule;
+                    Validator::$rule_method($key, $value, $level);
+                }
             }
         }
     }
@@ -78,7 +80,6 @@ class Validator
 
     public static function validateUrlVariables($schema, $values, $level)
     {
-
         self::validate($schema, $values, $level);
 
     }
@@ -117,6 +118,7 @@ class Validator
     public static function validatePayloadData($schema, $values, $level)
     {
         self::validate($schema, $values, $level);
+
     }
 
 

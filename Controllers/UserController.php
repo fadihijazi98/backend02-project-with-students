@@ -2,102 +2,105 @@
 
 namespace Controller;
 
-use helpers\RequestHelper;
 use constants\Rules;
+use helpers\RequestHelper;
+use Models\User;
+use customException\SourceNotFound;
+use Exception;
 
 class UserController extends BaseController
 {
 
 
     protected $validationSchema = [
-        "create" => [
-
-            "url" => [
-                "userId" => [Rules::INTEGER]
-            ],
-            "query" => [
-                "content_is_html" => [Rules::BOOLEAN]
-            ],
+        'create' => [
             "payload" => [
-                "userId" => [Rules::INTEGER],
-                "userName" => [Rules::STRING],
-                "email" => [Rules::STRING],
-                "phone" => [Rules::STRING, Rules::REQUIRED],
-                "isAdmin" => [Rules::BOOLEAN]
+                "name" => [Rules::REQUIRED, Rules::STRING],
+                "userName" => [Rules::REQUIRED, Rules::STRING],
+                "email" => [Rules::REQUIRED, Rules::STRING],
+                "profile_img" => [Rules::STRING],
+                "password" => [Rules::REQUIRED, Rules::STRING]
             ]
         ],
-        "show" => [
-
-            "url" => [
-                "userId" => [Rules::INTEGER,Rules::REQUIRED],
-                "postId"=>[Rules::INTEGER]
-            ],
-            "query" => [
-                "content_is_html" => [Rules::BOOLEAN]
-            ],
+        "update" => [
             "payload" => [
-                "userId" => [Rules::INTEGER],
+                "name" => [Rules::STRING],
                 "userName" => [Rules::STRING],
                 "email" => [Rules::STRING],
-                "phone" => [Rules::STRING, Rules::REQUIRED],
-                "isAdmin" => [Rules::BOOLEAN]
+                "profile_img" => [Rules::STRING],
+                "password" => [Rules::STRING]
+
             ]
-
-
-
         ]
     ];
 
 
     /*
-        * [GET/user] index()-> get the list of resources
-        * [GET/user/{id}]  git resource by id
-        *[POST/user] create mew resource
-        *[PUT/user/{id}] update resource by id
+     * [GET/user] index()-> get the list of resources
+     * [GET/user/{id}]  git resource by id
+     *[POST/user] create mew resource
+     *[PUT/user/{id}] update resource by id
      * [DELETE/user/{id}] delete resource by id
-        * */
+     */
 
-
-    protected static function index($id)
+    protected function index()
     {
-        return [[
-            "id" => $id,
-            "name" => "saleh",
-            "email" => "saleh@gmail.com"
-        ],
-            [
-                "id" => "2",
-                "name" => "mhmd",
-                "email" => "mhmd@gmail.com"
+        $users = User::all();
+        return $users;
+    }
 
-            ]
+    protected function show($id)
+    {
+        $user = User::query()->find($id);
+        if (!$user) {
+            throw new SourceNotFound();
+        }
+        return $user;
+    }
+
+    protected function create()
+    {
+        $payload = RequestHelper::getRequestPayload();
+        $payload['password'] = md5($payload['password']);
+
+        $user = User::create($payload);
+
+        return [
+            "id" => $user->id
         ];
     }
 
-    protected static function show($userId, $postId)
+    protected function update($id)
     {
-        return " user #$userId like post #$postId";
+        $payload = RequestHelper::getRequestPayload();
+        if ($payload['password']) {
+            throw new Exception("password can't be update by this API.");
+        }
+
+        $user = $this->show($id);
+        $user->update($payload);
+
+        return [
+            "message" => "update "
+        ];
+
     }
 
-    protected static function create($userID)
+    protected function delete($id)
     {
-        $data = RequestHelper::getRequestPayload();
-        return " create new user has phone : " . $data["phone"] . "     #$userID";
-    }
+        $payload = RequestHelper::getRequestPayload();
 
-    protected static function update($id)
-    {
-        return "user #$id update successfully";
-    }
+        $user = $this->show($id);
+        $user->delete($payload);
 
-    protected static function delete($id)
-    {
-        return "user #$id delete successfully";
-    }
+        return [
+            "message" => "deleted "
+        ];
 
-    protected static function like($id)
-    {
-        return " user  #$id" . " liked saleh post ";
     }
 
 }
+
+
+
+

@@ -2,9 +2,9 @@
 
 namespace Controller;
 
-use constants\Rules;
 use component\Validator;
 use helpers\RequestHelper;
+use http\Params;
 
 abstract class  BaseController
 {
@@ -48,8 +48,7 @@ public function __construct(){
     protected function __call($method,$arguments){
 
         $arguments=$arguments[0];
-
-        $handler=(key_exists($method,$this->handlerMap))?$this->handlerMap[$method]:$method;
+       $handler=(key_exists($method,$this->handlerMap))?$this->handlerMap[$method]:$method;
         if (!method_exists($this,$handler)){
             return ["message"=>"no ".$handler ." defined as handler "];
         }
@@ -60,27 +59,31 @@ public function __construct(){
         if (key_exists($handler,$this->validationSchema)){
             $schema=$this->validationSchema;
         }
+        if ($schema[$handler]!=null) {
 
-        // validate url variables
+            // validate url variables
 
-        if (key_exists("url",$schema[$handler])){
 
-            $this->validator->validateUrlVariables($schema[$handler]["url"],$arguments,"url variables level ");
-        }
+            if (key_exists("url", $schema[$handler])) {
 
-        //validate query params
+                $this->validator->validateUrlVariables($schema[$handler]["url"], $arguments, "url variables level ");
+            }
 
-        if (key_exists("query",$schema[$handler])){
+            //validate query params
 
-            $values=$_GET;
-            $this->validator->validateQueryParams($schema[$handler]["query"],$values,"query params level ");
-        }
+            if (key_exists("query", $schema[$handler])) {
 
-        //validate payload data
+                $values = $_GET;
+                $this->validator->validateQueryParams($schema[$handler]["query"], $values, "query params level ");
+            }
 
-        if (key_exists("payload",$schema[$handler])){
+            //validate payload data
 
-            $this->validator->validatePayloadData($schema[$handler]["payload"],RequestHelper::getRequestPayload()," payload data level ");
+            if (key_exists("payload", $schema[$handler])) {
+
+                $this->validator->validatePayloadData($schema[$handler]["payload"], RequestHelper::getRequestPayload(), " payload data level ");
+            }
+
         }
 
 

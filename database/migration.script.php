@@ -26,7 +26,7 @@ foreach ($migrations as $migration){
         continue;
     }
 
-    require $migration;
+    require "$migration";
     echo "$table_name has been created .\n";
 
 }

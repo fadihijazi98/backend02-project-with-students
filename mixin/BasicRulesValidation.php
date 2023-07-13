@@ -1,6 +1,9 @@
 <?php
 namespace Mixins;
 
+use customException\BadRequestException;
+use mysql_xdevapi\Exception;
+
 trait BasicRulesValidation{
 
 
@@ -16,7 +19,7 @@ trait BasicRulesValidation{
 
         if ($value!=null && !in_array($value, $booleanValue,true)) {
 
-            throw new \Exception("The value #$value in $level must be boolean value false or true .", 300);
+            throw new BadRequestException("The value #$value in $level must be boolean value false or true .");
         }
     }
 
@@ -31,7 +34,7 @@ trait BasicRulesValidation{
         if ($value != null && !ctype_digit("$value")) {
 
 
-            throw new \Exception("The value #$value in $level must be an integer.", 500);
+            throw new BadRequestException("The value #$value in $level must be an integer.");
         }
     }
 
@@ -44,7 +47,7 @@ trait BasicRulesValidation{
     public static function validate_rule_is_string($key, $value, $level)
     {
         if ($value != null && !is_string($value))
-            throw new \Exception("The value #$value in $level must be a string .", 300);
+            throw new BadRequestException("The value #$value in $level must be a string .");
 
     }
 
@@ -57,9 +60,11 @@ trait BasicRulesValidation{
     {
 
         if (!$value)
-            throw new \Exception("The value of \" $key \" cannot be null in $level.", 500);
+            throw new BadRequestException("The value of \" $key \" cannot be null in $level.");
+
 
 
     }
 
-}
+
+}//
