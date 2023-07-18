@@ -47,7 +47,7 @@ class Validator
     /**
      * @throws \Exception
      */
-    private function validate($schema, $values, $level,$id)
+    private function validate($schema, $values, $level)
     {
 
         foreach ($schema as $key => $rules) {
@@ -71,7 +71,6 @@ class Validator
                     if (key_exists("model", $rule)) {
 
                         $arguments[] = $rule["model"];
-                        $arguments[]=$id;
                     }
                     $rule = $specialRule;
                 }
@@ -99,9 +98,9 @@ class Validator
     }
 
 
-    public function validateRequestPayload($schema, $values,$id)
+    public function validateRequestPayload($schema, $values)
     {
-        $this->validate($schema, $values, "request payload level",$id);
+        $this->validate($schema, $values, "request payload level");
 
     }
 

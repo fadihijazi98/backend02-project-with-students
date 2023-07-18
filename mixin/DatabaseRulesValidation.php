@@ -11,7 +11,7 @@ trait DatabaseRulesValidation
     /**
      * @throws BadRequestException
      */
-    private function validate_rule_is_unique($key, $value, $level, $model,$id){
+    private function validate_rule_is_unique($key, $value, $level, $model){
 
         if($value == null){
             return;
@@ -25,7 +25,7 @@ trait DatabaseRulesValidation
 
         $isUpdatedFlag=true;
 
-        $modelId=$id['id'];
+        $modelId = RequestHelper::extractResourceIdFromRequestPath();
 
         if ($modelId){
 

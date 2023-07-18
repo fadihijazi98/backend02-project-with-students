@@ -6,7 +6,7 @@ use CustomExceptions\ResourceNotFound;
 use Helpers\RequestHelper;
 use Models\User;
 use Constants\Rules;
-
+use Illuminate\Pagination\Paginator;
 class UserController extends BaseController
 {
     protected $validationSchema = [
@@ -53,8 +53,12 @@ class UserController extends BaseController
 
     protected function index(){
 
-        return User::all("id","username","profile_img");
+        $limit=key_exists("limit",$_GET) ? $_GET["limit"] : 10 ;
 
+        $current_page=key_exists("page",$_GET) ? $_GET["page"] : 1;
+        $paginator = User::query()->paginate($limit,["id","username","profile_img"],'page',$current_page);
+
+        return $paginator->items();
     }
     protected function show($id){
 

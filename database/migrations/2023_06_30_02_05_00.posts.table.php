@@ -6,7 +6,7 @@ Manager::schema()->create("posts",function (Blueprint $table){
 
     $table->id();
     $table->text("content");
-    $table->foreignId("users_id")
+    $table->foreignId("user_id")
     ->constrained()
     ->cascadeOnDelete();
     $table->timestamp("created")->useCurrent();

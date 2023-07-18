@@ -24,7 +24,6 @@ abstract class BaseController {
     {
 
         $arguments = $arguments[0];
-
         $handler = key_exists($method, $this->handlerMap) ? $this->handlerMap[$method] : $method;
 
         if (! method_exists($this, $handler)) {
@@ -43,7 +42,7 @@ abstract class BaseController {
             $this->validator->validateQueryParams($handlerSchema["query"],$_GET);
         }
         if (key_exists("payload",$handlerSchema)){
-            $this->validator->validateRequestPayload($handlerSchema["payload"],RequestHelper::getRequestPayload(),$arguments);
+            $this->validator->validateRequestPayload($handlerSchema["payload"],RequestHelper::getRequestPayload());
         }
         $argumentValues = array_values($arguments);
         return ["data" => $this->$handler(... $arguments)];
