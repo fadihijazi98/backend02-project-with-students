@@ -9,4 +9,9 @@ class User extends Model
     protected $hidden = ["password"];
     public $timestamps = false;
 
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
 }
