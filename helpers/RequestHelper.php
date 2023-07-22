@@ -52,4 +52,21 @@ class RequestHelper
 
     }
 
+    /**
+     * Get variable that  sent from the request url
+     *
+     * @return $variable
+     * */
+
+    public static function extractResourcefromRequestPath(){
+
+        $path_parts=self::getRequestUriAsArray();
+
+        $resource=array_pop($path_parts);
+        if (ctype_digit($resource)){
+            return $resource;
+        }
+        return null;
+    }
+
 }

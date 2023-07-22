@@ -8,6 +8,7 @@ class Rules extends BaseConstants
     const STRING="string";
     const BOOLEAN="boolean";
     const REQUIRED="required";
+    const UNIQUE="unique";
 
 
 

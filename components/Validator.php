@@ -3,17 +3,20 @@
 namespace component;
 
 use constants\Rules;
-use Controller\UserController;
-use Mixins\BasicRulesValidation;
-use mysql_xdevapi\Exception;
+use Illuminate\Database\Eloquent\Model;
+use Mixins\BasicRulesValidation, Mixins\DatabaseRulesValidation;
+
+use Models\User;
+use Exception;
 
 class Validator
 {
 
-    use BasicRulesValidation;
+    use BasicRulesValidation, DatabaseRulesValidation;
+
     public function __construct()
     {
-      $this->validateImplementedRulesByConstants();
+        $this->validateImplementedRulesByConstants();
     }
 
 
@@ -21,11 +24,12 @@ class Validator
      *
      * @throws \Exception
      * */
-    private  function validateImplementedRulesByConstants(){
-        $rules=(new Rules())->listOfExistConstant();
-        foreach ($rules as $rule){
+    private function validateImplementedRulesByConstants()
+    {
+        $rules = (new Rules())->listOfExistConstant();
+        foreach ($rules as $rule) {
             $this->validateRuleIsImplemented($rule
-                ,"Please sync your Rules constants with existing implementations in Validator component.");
+                , "Please sync your Rules constants with existing implementations in Validator component.");
         }
     }
 
@@ -33,9 +37,10 @@ class Validator
      *
      * @throws \Exception
      * */
-    private  function validateRuleIsImplemented($rule, $messageException){
-        if (!method_exists($this,"validate_rule_is_".$rule)){
-            throw new \Exception(  $messageException);
+    private function validateRuleIsImplemented($rule, $messageException)
+    {
+        if (!method_exists($this, "validate_rule_is_" . $rule)) {
+            throw new \Exception($messageException);
         }
     }
 
@@ -43,84 +48,102 @@ class Validator
      *
      * represent shared validation data method
      *
-     * @throws \Exception
+     * @throws \BadFunctionCallException
      * */
 
-    public static function validate($schema, $values, $level)
+    public  function validate($schema, $values, $level)
     {
-        if ($schema!=null) {
+        if ($schema != null) {
             foreach ($schema as $key => $rules) {
-
                 $value = null;
 
                 if (key_exists($key, $values)) {
                     $value = $values[$key];
-                }
 
-                foreach ($rules as $rule) {
-                    $rule_method = "validate_rule_is_" . $rule;
-                    Validator::$rule_method($key, $value, $level);
+
+                    $argument = [];
+                    foreach ($rules as $specialKey => $rule) {
+
+                        if ($rule == Rules::UNIQUE && !is_array($rule)) {
+                            throw new Exception("'unique' rule should have another level of data having 'model' value .");
+                        }
+
+                        $argument = [$key, $value, $level];
+                        if (is_array($rule)) {
+                            if (key_exists('model', $rule)) {
+                                $argument[] = $rule['model'];
+                            }
+                        }
+
+                        if (!is_integer($specialKey)) {
+                            $rule = $specialKey;
+                        }
+
+
+                        $rule_method = "validate_rule_is_" . $rule;
+
+                        $this->$rule_method(...$argument);
+                    }
                 }
             }
+            }
+
         }
-    }
+
 
     /**
      * represent validation Url Variables level
      *
-     * @param  array $schema (associative array)
-     * @param  array  $values (associative array)
-     * @param  string  $level
-     *
+     * @param array $schema (associative array)
+     * @param array $values (associative array)
+     * @param string $level
      * @return void
-     *
-     * @throws \Exception
-     *
+     * @throws \BadFunctionCallException
+     * @var Model $model
      * */
 
-    public static function validateUrlVariables($schema, $values, $level)
+    public  function validateUrlVariables($schema, $values)
     {
-        self::validate($schema, $values, $level);
+        self::validate($schema, $values, "url variables level ");
 
     }
 
     /**
      * represent validation query  params level
      *
-     * @param  array $schema (associative array)
-     * @param  array  $values (associative array)
-     * @param  string  $level
+     * @param array $schema (associative array)
+     * @param array $values (associative array)
+     * @param string $level
      *
      * @return void
      *
      * @throws \Exception
      * */
 
-    public static function validateQueryParams($schema, $values, $level)
+    public  function validateQueryParams($schema, $values)
 
     {
-        self::validate($schema, $values, $level);
+        self::validate($schema, $values, "query params level ");
 
     }
 
     /**
      * represent validation payload data level
      *
-     * @param  array $schema (associative array)
-     * @param  array  $values (associative array)
-     * @param  string  $level
+     * @param array $schema (associative array)
+     * @param array $values (associative array)
+     * @param string $level
      *
      * @return void
      *
-     * @throws \Exception
-     *
+     * @throws \BadFunctionCallException
      * */
-    public static function validatePayloadData($schema, $values, $level)
+
+    public  function validatePayloadData($schema, $values)
     {
-        self::validate($schema, $values, $level);
+        self::validate($schema, $values, " payload data level ");
 
     }
-
 
 
 }

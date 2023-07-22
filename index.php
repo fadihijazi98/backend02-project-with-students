@@ -2,6 +2,9 @@
 
 header('Content-Type:application/json; charset=utf-8');
 
+//error handler
+include_once "error_handling.php";
+
 require 'vendor/autoload.php';
 
 use customException\SourceNotFound;

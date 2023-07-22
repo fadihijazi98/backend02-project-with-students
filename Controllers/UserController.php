@@ -16,8 +16,18 @@ class UserController extends BaseController
         'create' => [
             "payload" => [
                 "name" => [Rules::REQUIRED, Rules::STRING],
-                "userName" => [Rules::REQUIRED, Rules::STRING],
-                "email" => [Rules::REQUIRED, Rules::STRING],
+                "userName" => [Rules::REQUIRED,
+                    Rules::STRING,
+                    Rules::UNIQUE=>[
+                        "model"=>User::class
+                    ]
+                ],
+                "email" => [Rules::REQUIRED,
+                    Rules::STRING,
+                    Rules::UNIQUE=>[
+                        "model"=>User::class
+                    ]
+                ],
                 "profile_img" => [Rules::STRING],
                 "password" => [Rules::REQUIRED, Rules::STRING]
             ]
@@ -25,9 +35,14 @@ class UserController extends BaseController
         "update" => [
             "payload" => [
                 "name" => [Rules::STRING],
-                "userName" => [Rules::STRING],
-                "email" => [Rules::STRING],
-                "profile_img" => [Rules::STRING],
+                "userName" => [Rules::STRING, Rules::UNIQUE=>[
+                    "model"=>User::class
+                ]],
+                "email" => [Rules::STRING,
+                    Rules::UNIQUE=>[
+                        "model"=>User::class
+                    ]],
+                "profile_image" => [Rules::STRING],
                 "password" => [Rules::STRING]
 
             ]
@@ -45,8 +60,12 @@ class UserController extends BaseController
 
     protected function index()
     {
-        $users = User::all();
-        return $users;
+
+
+        $current_page=key_exists('page',$_GET)?$_GET['page']:1;
+        $limit=key_exists('limit',$_GET)?$_GET['limit']:2;
+        $paginator=User::query()->paginate($limit,['id','userName','profile_image'],"page",$current_page);
+        return $paginator->items();
     }
 
     protected function show($id)
@@ -73,7 +92,8 @@ class UserController extends BaseController
     protected function update($id)
     {
         $payload = RequestHelper::getRequestPayload();
-        if ($payload['password']) {
+
+        if (key_exists("password",$payload) ) {
             throw new Exception("password can't be update by this API.");
         }
 

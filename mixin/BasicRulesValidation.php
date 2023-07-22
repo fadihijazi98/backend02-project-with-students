@@ -19,7 +19,7 @@ trait BasicRulesValidation{
 
         if ($value!=null && !in_array($value, $booleanValue,true)) {
 
-            throw new BadRequestException("The value #$value in $level must be boolean value false or true .");
+            throw new BadRequestException("$key (in $level within value = $value should be boolean ");;
         }
     }
 
@@ -34,7 +34,7 @@ trait BasicRulesValidation{
         if ($value != null && !ctype_digit("$value")) {
 
 
-            throw new BadRequestException("The value #$value in $level must be an integer.");
+            throw new BadRequestException("$key (in $level within value = $value should be integer.");
         }
     }
 
@@ -47,7 +47,7 @@ trait BasicRulesValidation{
     public static function validate_rule_is_string($key, $value, $level)
     {
         if ($value != null && !is_string($value))
-            throw new BadRequestException("The value #$value in $level must be a string .");
+            throw new BadRequestException("$key (in $level within value = $value should be string.");
 
     }
 

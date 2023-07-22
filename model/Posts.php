@@ -2,9 +2,12 @@
 
 namespace Models;
 
-use Illuminate\Database\Capsule\Manager;
 
-class Posts extends Manager
+use Illuminate\Database\Eloquent\Model;
+
+class Posts extends Model
 {
+    protected $guarded =['id'];
+    public $timestamps=false;
 
 }

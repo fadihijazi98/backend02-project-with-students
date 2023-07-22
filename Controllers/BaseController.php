@@ -1,14 +1,14 @@
 <?php
 
 namespace Controller;
-
 use component\Validator;
 use helpers\RequestHelper;
+use http\Encoding\Stream\Debrotli;
 use http\Params;
+use Models\User;
 
 abstract class  BaseController
 {
-
     /*
      * in MVC Model
      *
@@ -45,7 +45,8 @@ public function __construct(){
 
 
 
-    protected function __call($method,$arguments){
+    public function __call($method,$arguments){
+
 
         $arguments=$arguments[0];
        $handler=(key_exists($method,$this->handlerMap))?$this->handlerMap[$method]:$method;
@@ -59,14 +60,13 @@ public function __construct(){
         if (key_exists($handler,$this->validationSchema)){
             $schema=$this->validationSchema;
         }
-        if ($schema[$handler]!=null) {
+        if (key_exists($handler,$schema)) {
 
             // validate url variables
 
-
             if (key_exists("url", $schema[$handler])) {
 
-                $this->validator->validateUrlVariables($schema[$handler]["url"], $arguments, "url variables level ");
+                $this->validator->validateUrlVariables($schema[$handler]["url"], $arguments);
             }
 
             //validate query params
@@ -74,14 +74,14 @@ public function __construct(){
             if (key_exists("query", $schema[$handler])) {
 
                 $values = $_GET;
-                $this->validator->validateQueryParams($schema[$handler]["query"], $values, "query params level ");
+                $this->validator->validateQueryParams($schema[$handler]["query"], $values);
             }
 
             //validate payload data
 
-            if (key_exists("payload", $schema[$handler])) {
+            if (key_exists($handler,$schema) && key_exists("payload",$schema[$handler] )) {
 
-                $this->validator->validatePayloadData($schema[$handler]["payload"], RequestHelper::getRequestPayload(), " payload data level ");
+                $this->validator->validatePayloadData($schema[$handler]["payload"], RequestHelper::getRequestPayload());
             }
 
         }
