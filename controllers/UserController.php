@@ -5,6 +5,7 @@ use Constants\Rules;
 use CustomExceptions\BadRequestException;
 use CustomExceptions\ResourceNotFound;
 use Helpers\RequestHelper;
+use Helpers\ResourceHelper;
 use Models\User;
 
 class UserController extends BaseController {
@@ -62,13 +63,7 @@ class UserController extends BaseController {
 
     protected function show($id) {
 
-        $user =  User::query()->find($id);
-        if (! $user) {
-
-            throw new ResourceNotFound();
-        }
-
-        return $user;
+        return ResourceHelper::findResourceOr404Exception(User::class, $id);
     }
 
     protected function create() {
@@ -90,7 +85,7 @@ class UserController extends BaseController {
             throw new BadRequestException("Password can't be update by this API.");
         }
 
-        $user = $this->show($id);
+        $user = ResourceHelper::findResourceOr404Exception(User::class, $id);
         $user->update($payload);
 
         return [
@@ -100,7 +95,7 @@ class UserController extends BaseController {
 
     protected function delete($id) {
 
-        $user =  $this->show($id);
+        $user =  ResourceHelper::findResourceOr404Exception(User::class, $id);
         $user->delete();
 
         return [

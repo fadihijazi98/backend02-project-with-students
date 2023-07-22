@@ -2,10 +2,6 @@
 
 namespace Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Post extends Model
+class Post extends BaseModel
 {
-    protected $guarded = ["id"];
-    public $timestamps = false;
 }
