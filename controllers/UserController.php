@@ -53,7 +53,11 @@ class UserController extends BaseController {
 
     protected function index() {
 
-        return User::all("id", "username", "profile_image");
+        $limit = key_exists("limit", $_GET) ? $_GET["limit"] : 10;
+        $current_page = key_exists("page", $_GET) ? $_GET["page"] : 1;
+
+        $paginator = User::query()->paginate($limit, ["id", "username", "profile_image"], 'page', $current_page);
+        return $paginator->items();
     }
 
     protected function show($id) {
