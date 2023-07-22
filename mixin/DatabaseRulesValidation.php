@@ -34,7 +34,7 @@ trait DatabaseRulesValidation
         if ($modelId) {
 
             $matchedModel = $model::query()->find($modelId);
-            if ($matchedModel->$key == $fetchedModel->$key) {
+            if ($matchedModel && $matchedModel->$key == $fetchedModel->$key) {
 
                 $isUpdatedFlag = false;
             }
