@@ -46,6 +46,13 @@ class PostController extends BaseController
 
 
     }
+    protected function show($postId){
+        $post = Post::query()->find($postId);
+        if (!$post){
+            throw new ResourceNotFound();
+        }
+        return $post->where("id",$postId)->select("id","content")->get();
+    }
 protected function create($userId){
         $user = User::query()->find($userId);
 
