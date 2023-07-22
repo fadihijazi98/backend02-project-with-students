@@ -5,6 +5,7 @@ namespace Controllers;
  use Components\Validator;
  use Helpers\RequestHelper;
 
+
  abstract class BaseController
 {
     protected array $validationSchema = [];

@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Constants\Rules;
+use Models\Post;
 
 class PostController extends BaseController
 {
@@ -20,7 +21,14 @@ class PostController extends BaseController
                 ],
                 "payload"=>
                 [
-                    "content"=>[Rules::REQUIRED,Rules::STRING]
+                    "content"=>
+                        [Rules::REQUIRED,
+                            Rules::STRING,
+                                Rules::UNIQUE=>
+                                               [
+                                                "model"=>Post::class
+                                               ]
+                        ]
                 ]
             ]
 

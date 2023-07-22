@@ -3,11 +3,15 @@
 namespace Components;
 use Constants\Rules;
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Mixins\BasicRulesValidation;
+use Mixins\DatabaseRulesValidation;
+use Models\User;
 
 class Validator
 {
-    use BasicRulesValidation;
+    use BasicRulesValidation, DatabaseRulesValidation;
+
     /**
      * @throws Exception
      */
@@ -15,28 +19,30 @@ class Validator
     {
         $this->validateImplementedRulesConstants();
     }
+
     private function validateImplementedRulesConstants()
     {
         $rules = (new Rules())->listOfExistConstants();
-        foreach ($rules as $rule)
-        {
-            $ruleMethod = "validateRuleIs".$rule;
-            if(!method_exists($this,$ruleMethod))
-            {
-                $this->validateRuleIsImplemented($rule,"Desired method rule isn't implemented :(, try another one by examining exist rules constants!!");
+
+        foreach ($rules as $rule) {
+            $ruleMethod = "validateRuleIs" . $rule;
+
+            if (!method_exists($this, $ruleMethod)) {
+                $this->validateRuleIsImplemented($rule, "Desired method rule isn't implemented :(, try another one by examining exist rules constants!!");
             }
         }
     }
+
     /**
      * @throws Exception
      */
     private function validateRuleIsImplemented($rule, $exceptionMessage): void
     {
-        $rule_method = "validateRuleIs".$rule;
-        if (! method_exists($this, $rule_method))
-        {
+        $rule_method = "validateRuleIs" . $rule;
 
-            throw new \Exception($exceptionMessage);
+        if (!method_exists($this, $rule_method)) {
+
+            throw new Exception($exceptionMessage);
         }
     }
 
@@ -46,23 +52,48 @@ class Validator
     private function validate($schema, $values, $level)
     {
         $value = null;
-        foreach ($schema as $key=>$rules)
+
+        foreach ($schema as $key => $rules)
         {
-            if(key_exists($key,$values))
+            if (key_exists($key, $values))
             {
                 $value = $values[$key];
             }
-        }
-        foreach ($rules as $rule)
-        {
-            $ruleMethod = "validateRuleIs".$rule;
-            if(!method_exists($this,$ruleMethod))
+
+            foreach ($rules as $specialRule => $rule)
             {
-                $this->validateRuleIsImplemented($rule,"'$rule' method isn't implemented unfortunately :(, examine exist rules constants to reach exist rule methods");
+
+                $arguments = [$key, $value, $level];
+
+                if (!is_array($rule) && $rule === Rules::UNIQUE)
+                {
+                    throw new Exception("UNIQUE rule should have another level of data having 'model' value");
+
+                }
+                else if (is_array($rule))
+                {
+
+                    if (key_exists("model", $rule))
+                    {
+
+                        $arguments[] = $rule["model"];
+                    }
+
+                    $rule = $specialRule;
+                }
+
+            $ruleMethod = "validateRuleIs" . $rule;
+
+            if (!method_exists($this, $ruleMethod))
+            {
+                $this->validateRuleIsImplemented($rule, "'$rule' method isn't implemented unfortunately :(, examine exist rules constants to reach exist rule methods");
             }
-            $this->$ruleMethod($key,$value,$level);
+
+            $this->$ruleMethod(... $arguments);
         }
     }
+}
+
     public function validateUrlVariables($schema,$values)
     {
          $this->validate($schema,$values,"URL variables");

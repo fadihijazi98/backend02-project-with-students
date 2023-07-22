@@ -9,7 +9,7 @@ trait BasicRulesValidation
 {
     /**
      * Implementation of string rule method
-     * @throws Exception when the $value is not null and not string
+     * @throws BadRequestException when the $value is not null and not string
      */
     private function validateRuleIsString($key,$value,$level): void
     {
@@ -21,7 +21,7 @@ trait BasicRulesValidation
 
     /**
      * Implementation of integer rule method
-     * @throws Exception when the $value is null and not integer
+     * @throws BadRequestException when the $value is null and not integer
      */
     private function validateRuleIsInteger($key,$value,$level): void
     {
@@ -33,7 +33,7 @@ trait BasicRulesValidation
 
     /**
      * Implementation of boolean rule method
-     * @throws Exception when the $value is not null and not boolean
+     * @throws BadRequestException when the $value is not null and not boolean
      */
     private function validateRuleIsBoolean($key,$value,$level): void
     {
@@ -46,7 +46,7 @@ trait BasicRulesValidation
 
     /**
      * Implementation of required rule method
-     * @throws Exception when the $value of $key is null
+     * @throws BadRequestException when the $value of $key is null
      */
     private function validateRuleIsRequired($key,$value,$level): void
     {

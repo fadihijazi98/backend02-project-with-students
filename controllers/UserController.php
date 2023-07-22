@@ -17,8 +17,24 @@ class UserController extends BaseController
             "payload" =>
                 [
                 "name" => [Rules::REQUIRED, Rules::STRING],
-                "email" => [Rules::REQUIRED, Rules::STRING],
-                "username" => [Rules::REQUIRED, Rules::STRING],
+                "email" =>
+                    [
+                           Rules::REQUIRED,
+                              Rules::STRING,
+                                Rules::UNIQUE=>
+                                       [
+                                           "model"=>User::class
+                                       ]
+                    ],
+                "username" =>
+                    [
+                          Rules::REQUIRED,
+                              Rules::STRING,
+                                Rules::UNIQUE=>
+                                              [
+                                                "model"=>User::class
+                                              ]
+                    ],
                 "password" => [Rules::REQUIRED, Rules::STRING],
                 "profile_image" => [Rules::STRING],
                 ]
@@ -28,8 +44,24 @@ class UserController extends BaseController
             "payload" =>
                 [
                 "name" => [Rules::STRING],
-                "email" => [Rules::STRING],
-                "username" => [Rules::STRING],
+                "email" =>
+                    [
+                         Rules::REQUIRED,
+                              Rules::STRING,
+                                 Rules::UNIQUE=>
+                                                 [
+                                                    "model"=>User::class
+                                                 ]
+                    ],
+                "username" =>
+                    [
+                            Rules::REQUIRED,
+                                Rules::STRING,
+                                   Rules::UNIQUE=>
+                                                   [
+                                                     "model"=>User::class
+                                                   ]
+                    ],
                 "profile_image" => [Rules::STRING],
                 ]
             ]

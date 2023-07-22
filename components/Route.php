@@ -143,7 +143,7 @@ class Route
     }
     public static function handleRequest(): array
     {
-        $uri = RequestHelper::getUriWithOutQueryParams($_SERVER["REQUEST_URI"]);
+        $uri = RequestHelper::getUriWithOutQueryParams();
        $requestPathParts = RequestHelper::getRequestPathAsArray($uri,true);
 
        $requestMethod = $_SERVER['REQUEST_METHOD'];
