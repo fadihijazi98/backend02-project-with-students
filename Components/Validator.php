@@ -47,7 +47,7 @@ class Validator
     /**
      * @throws \Exception
      */
-    private function validate($schema, $values, $level)
+    private function validate($schema, $values, $level,$resourceId=null)
     {
 
         foreach ($schema as $key => $rules) {
@@ -56,7 +56,7 @@ class Validator
 
             if (key_exists($key, $values)) {
                 $value = $values[$key];
-            }
+                 }
 
             foreach ($rules as $specialRule => $rule){
 
@@ -71,6 +71,7 @@ class Validator
                     if (key_exists("model", $rule)) {
 
                         $arguments[] = $rule["model"];
+                        $arguments[]  =$resourceId;
                     }
                     $rule = $specialRule;
                 }
@@ -91,16 +92,17 @@ class Validator
 
     }
 
-    public function validateQueryParams($schema, $values)
+    public function validateQueryParams($schema, $values,$resourceId)
     {
-        $this->validate($schema, $values, "query params level");
+        $this->validate($schema, $values, "query params level",$resourceId);
 
     }
 
 
-    public function validateRequestPayload($schema, $values)
+    public function validateRequestPayload($schema, $values,$resourceId)
     {
-        $this->validate($schema, $values, "request payload level");
+
+        $this->validate($schema, $values, "request payload level",$resourceId);
 
     }
 

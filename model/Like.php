@@ -1,9 +1,10 @@
 <?php
 
 namespace Models;
-use Illuminate\Database\Eloquent\Model;
 
-class Like extends Model
+class Like extends BaseModel
 {
-
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

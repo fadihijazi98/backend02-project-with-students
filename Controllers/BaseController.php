@@ -24,6 +24,12 @@ abstract class BaseController {
     {
 
         $arguments = $arguments[0];
+        $resourceId=null;
+
+        if(key_exists('id',$arguments)) {
+            $resourceId = $arguments['id'];
+        }
+
         $handler = key_exists($method, $this->handlerMap) ? $this->handlerMap[$method] : $method;
 
         if (! method_exists($this, $handler)) {
@@ -39,10 +45,11 @@ abstract class BaseController {
             $this->validator->validateUrlVariables($handlerSchema["url"],$arguments);
         }
         if (key_exists("query",$handlerSchema)){
-            $this->validator->validateQueryParams($handlerSchema["query"],$_GET);
+            $this->validator->validateQueryParams($handlerSchema["query"],$_GET,$resourceId);
         }
+
         if (key_exists("payload",$handlerSchema)){
-            $this->validator->validateRequestPayload($handlerSchema["payload"],RequestHelper::getRequestPayload());
+            $this->validator->validateRequestPayload($handlerSchema["payload"],RequestHelper::getRequestPayload(),$resourceId);
         }
         $argumentValues = array_values($arguments);
         return ["data" => $this->$handler(... $arguments)];

@@ -1,9 +1,10 @@
 <?php
 
 namespace Models;
-use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class Comment extends BaseModel
 {
-
+public function user(){
+     return $this->belongsTo(User::class);
+}
 }

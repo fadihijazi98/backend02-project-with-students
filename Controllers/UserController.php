@@ -4,6 +4,7 @@ namespace Controllers;
 use CustomExceptions\BadRequestException;
 use CustomExceptions\ResourceNotFound;
 use Helpers\RequestHelper;
+use Helpers\ResourceHelper;
 use Models\User;
 use Constants\Rules;
 use Illuminate\Pagination\Paginator;
@@ -60,13 +61,13 @@ class UserController extends BaseController
 
         return $paginator->items();
     }
+
+    /**
+     * @throws ResourceNotFound
+     */
     protected function show($id){
 
-       $user= User::query()->find($id);
-       if(!$user){
-           throw new ResourceNotFound();
-       }
-       return $user;
+       return ResourceHelper::findResourceOr404Exception(User::class, $id);
     }
     protected function create(){
         $payload =RequestHelper::getRequestPayload();
@@ -83,7 +84,7 @@ class UserController extends BaseController
         if(key_exists("password",$payload)){
             throw new BadRequestException("Unable to Update the password");
         }
-        $user = $this->show($id);
+        $user = ResourceHelper::findResourceOr404Exception(User::class, $id);
         $user->update($payload);
         return [
             "message" => "updated"
@@ -91,7 +92,8 @@ class UserController extends BaseController
     }
 
     protected function delete($id){
-        $user = $this->show($id);
+
+        $user = ResourceHelper::findResourceOr404Exception(User::class, $id);
         $user->delete();
         return [
             "message"=>"deleted"

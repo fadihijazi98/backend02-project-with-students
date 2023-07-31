@@ -6,10 +6,10 @@ Manager::schema()->create("likes",function (Blueprint $table){
 
     $table->id();
 
-    $table->foreignId("posts_id")
+    $table->foreignId("post_id")
         ->constrained()
         ->cascadeOnDelete();
-    $table->foreignId("users_id")
+    $table->foreignId("user_id")
         ->constrained()
         ->cascadeOnDelete();
 

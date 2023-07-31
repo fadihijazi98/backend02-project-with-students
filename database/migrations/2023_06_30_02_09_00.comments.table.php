@@ -7,10 +7,10 @@ Manager::schema()->create("comments",function (Blueprint $table){
     $table->id();
     $table->text("content");
 
-    $table->foreignId("posts_id")
+    $table->foreignId("post_id")
         ->constrained()
         ->cascadeOnDelete();
-    $table->foreignId("users_id")
+    $table->foreignId("user_id")
         ->constrained()
         ->cascadeOnDelete();
 

@@ -7,10 +7,10 @@ Manager::schema()->create("friends", function (Blueprint $table) {
 
     $table->id();
 
-    $table->foreignId("users_id")
+    $table->foreignId("user_id")
         ->constrained()
         ->cascadeOnDelete();
-    $table->foreignId("friends_id")
+    $table->foreignId("friend_id")
         ->constrained("users")
         ->cascadeOnDelete();
 

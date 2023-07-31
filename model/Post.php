@@ -1,10 +1,19 @@
 <?php
 
 namespace Models;
-use Illuminate\Database\Eloquent\Model;
+use Controllers\CommentController;
 
-class Post extends Model
+class Post extends BaseModel
 {
-    protected $guarded = ["id"];
-    public $timestamps = false;
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
+
+    public function likes(){
+        return $this->hasMany(Like::class);
+    }
 }
