@@ -44,19 +44,30 @@ class PostController extends BaseController
         ]
     ];
 
-    protected function index($userId) {
+    protected function index($userId)
+    {
 
         $limit = key_exists("limit", $_GET) ? $_GET["limit"] : 10;
         $current_page = key_exists("page", $_GET) ? $_GET["page"] : 1;
 
-        return
-            Post::query()
-                ->where("user_id", $userId)
-                ->paginate($limit, ["id", "content", "created"], "page", $current_page)
+        /**
+         * @var User $user
+         */
+        $user = ResourceHelper::findResourceOr404Exception(User::class, $userId);
+        $posts =
+            $user
+                ->posts()
+                ->with(['user:id,name,profile_image', 'likes', 'comments', 'comments.user:id,name,name,profile_image'])
+                ->paginate($limit, ["id", "content", "created", "user_id"], "page", $current_page)
                 ->items();
+        return ResourceHelper::loadOnlyForList(
+            ["id", "content", "created", "publisher_user", "likes_count", "recent_likes", "comments_count", "recent_comments"],
+            $posts
+        );
     }
 
-    protected function show($postId) {
+    protected function show($postId)
+    {
 
         /**
          *  - name (publisher user)
@@ -99,55 +110,19 @@ class PostController extends BaseController
          *  }
          */
 
-        $post = Post::query()->with(['user:id,name,profile_image', 'likes', 'comments'])->find($postId);
-        if ($post == null) {
-
-            throw new ResourceNotFound();
-        }
-
-        $response = [
-            'id' => $post->id,
-            'content' => $post->content,
-            'created' => $post->created,
-            'publisher_user' => $post->user,
-            "likes_count" => $post->likes->count(),
-            "comments_count" => $post->comments->count(),
-        ];
-
-        Post::query()->find(2);
-        $recent_likes = [];
-        foreach ($post->likes->sortByDesc("created") as $like) {
-
-            $recent_likes[]  = $like->user->name;
-            if (sizeof($recent_likes) == 2) {
-                break;
-            }
-        }
-
-        $recent_comments = [];
-        foreach ($post->comments->sortByDesc("created") as $comment) {
-
-            $recent_comments[] = [
-                'id' => $comment->id,
-                'content' => $comment->content,
-                'created' => $comment->created,
-                'user' => [
-                    'id' => $comment->user->id,
-                    'name' => $comment->user->name,
-                    'avatar' => $comment->user->profile_image
-                ]
-            ];
-            if (sizeof($recent_comments) == 5) {
-                break;
-            }
-        }
-        $response['recent_likes'] = $recent_likes;
-        $response['recent_comments'] = $recent_comments;
-
-        return $response;
+        $post = ResourceHelper::findResourceOr404Exception(
+            Post::class,
+            $postId,
+            ['user:id,name,profile_image', 'likes', 'comments', 'comments.user:id,name,name,profile_image']
+        );
+        return ResourceHelper::loadOnly(
+            ["id", "content", "created", "publisher_user", "likes_count", "recent_likes", "comments_count", "recent_comments"],
+            $post
+        );
     }
 
-    protected function create($userId) {
+    protected function create($userId)
+    {
 
         $user = ResourceHelper::findResourceOr404Exception(User::class, $userId);
 
@@ -159,7 +134,8 @@ class PostController extends BaseController
         return ["message" => "post created within id #" . $post->id];
     }
 
-    protected function update($postId) {
+    protected function update($postId)
+    {
 
         $post = ResourceHelper::findResourceOr404Exception(Post::class, $postId);
 
@@ -169,13 +145,15 @@ class PostController extends BaseController
         return ["message" => "post has been successfully updated."];
     }
 
-    protected function delete($postId) {
+    protected function delete($postId)
+    {
 
         ResourceHelper::findResourceOr404Exception(Post::class, $postId)->delete();
         return ["message" => "post has been successfully deleted."];
     }
 
-    protected function like($userId, $postId) {
+    protected function like($userId, $postId)
+    {
 
         $user = ResourceHelper::findResourceOr404Exception(User::class, $userId);
         $post = ResourceHelper::findResourceOr404Exception(Post::class, $postId);
@@ -194,7 +172,8 @@ class PostController extends BaseController
         return ["message" => "User (" . $user->username . ") like the post that have (" . $post->content . ") as content."];
     }
 
-    protected function unLike($userId, $postId) {
+    protected function unLike($userId, $postId)
+    {
 
         $user = ResourceHelper::findResourceOr404Exception(User::class, $userId);
         $post = ResourceHelper::findResourceOr404Exception(Post::class, $postId);
