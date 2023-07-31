@@ -47,15 +47,14 @@ class PostController extends BaseController
      */
     protected function index($userId)
     {
-        $user = ResourceHelper::findResourceOr404Exception(User::class,$userId);
         $posts = Post::query()->where('user_id',$userId)->get();
 
-        $post_of_user= [];
+        $posts_of_user= [];
 
         foreach ($posts as $post){
-            $post_of_user[] = $this->show($post->id);
+            $posts_of_user[] = $this->show($post->id);
         }
-        return $post_of_user;
+        return $posts_of_user;
 
     }
 
