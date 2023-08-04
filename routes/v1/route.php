@@ -1,5 +1,6 @@
 <?php
 
+use Controllers\CommentController;
 use Controllers\userController;
 use Components\Route;
 use Controllers\PostController;
@@ -12,7 +13,12 @@ Route::DELETE("users/{id}", UserController::class);
 
 Route::GET("users/{userId}/posts",PostController::class);
 Route::GET("posts/{postId}",PostController::class,"show");
-
 Route::POST("users/{userId}/posts",PostController::class);
 Route::PUT("posts/{postId}",PostController::class);
 Route::DELETE("posts/{postId}",PostController::class);
+
+Route::POST("users/{userId}/posts/{postId}/like", PostController::class, "like");
+Route::POST("users/{userId}/posts/{postId}/unlike", PostController::class, "unLike");
+
+Route::PUT("comments/{commentId}", CommentController::class);
+Route::POST("users/{userId}/posts/{postId}/comments", CommentController::class);

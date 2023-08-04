@@ -47,69 +47,37 @@ class PostController extends BaseController
      */
     protected function index($userId)
     {
-        $posts = Post::query()->where('user_id',$userId)->get();
+        $limit = key_exists("limit", $_GET) ? $_GET["limit"] : 10;
+        $current_page = key_exists("page", $_GET) ? $_GET["page"] : 1;
 
-        $posts_of_user= [];
+        $user = ResourceHelper::findResourceOr404Exception(User::class,$userId);
 
-        foreach ($posts as $post){
-            $posts_of_user[] = $this->show($post->id);
-        }
-        return $posts_of_user;
+        $posts =$user
+            ->posts
+            ->with(['user:id,name,profile_img', 'likes', 'comments','comments.user:id,name,profile_img'])
+            ->paginate($limit, ["id", "content", "created", "user_id"], "page", $current_page)
+            ->items();
+
+
+        return ResourceHelper::loadOnlyForList(
+            ["id", "content", "created", "publisher_user", "likes_count", "recent_likes", "comments_count", "recent_comments"],
+            $posts
+        );
 
     }
 
 
     protected function show($postId)
     {
-        $post = Post::query()->with(['user:id,name,profile_img', 'likes', 'comments'])->find($postId);
-
-        if ($post == null) {
-            throw new ResourceNotFound();
-        }
-        $response = [
-            'id' => $post->id,
-            'content'=> $post->content,
-            'created'=> $post->created,
-            'publisher_user'=>$post->user,
-            'likes_count'=>$post->likes->count(),
-            'comments_count'=>$post->comments->count()
-        ];
-
-        $recent_likes =[];
-        $recent_comments = [];
-
-        foreach ($post->likes->sortByDesc('created') as $like){
-
-            $recent_likes[] = $like->user->name;
-
-            if(sizeof($recent_likes)==2){
-                break;
-            }
-        }
-
-        foreach ($post->comments->sortByDesc('created') as $comment){
-
-            $recent_comments[] = [
-                'id' => $comment->id,
-                'content'=> $comment->content,
-                'created'=> $comment->created,
-                'user'=>[
-                    'id' => $comment->user->id,
-                    'name'=> $comment->user->name,
-                    'avatar'=> $comment->user->profile_img
-                ]
-            ];
-
-            if(sizeof($recent_comments)== 5){
-                break;
-            }
-        }
-            $response['recent_comments']=$recent_comments;
-            $response['recent_likes']=$recent_likes;
+        $post = ResourceHelper::findResourceOr404Exception(
+            Post::class,
+            $postId
+            ,['user:id,name,profile_img', 'likes', 'comments','comments.user:id,name,profile_img']);
 
 
-
-        return $response;
+        return ResourceHelper::loadOnly(
+            ["id", "content", "created", "publisher_user", "likes_count", "recent_likes", "comments_count", "recent_comments"],
+            $post);
     }
 
     /**
