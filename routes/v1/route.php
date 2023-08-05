@@ -38,5 +38,6 @@ Route::DELETE("posts/{postId}", PostController::class);
 Route::POST("users/{userId}/posts/{postId}/like", PostController::class, "like");
 Route::POST("users/{userId}/posts/{postId}/unlike", PostController::class, "unLike");
 
+Route::GET("posts/{postId}/comments", CommentController::class);
 Route::PUT("comments/{commentId}", CommentController::class);
 Route::POST("users/{userId}/posts/{postId}/comments", CommentController::class);

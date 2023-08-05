@@ -28,9 +28,43 @@ class CommentController extends BaseController
         ]
     ];
 
-    protected function create($userId, $postId) {
+    protected function index($postId)
+    {
 
-        $user =  ResourceHelper::findResourceOr404Exception(User::class, $userId);
+        /**
+         * Response:
+         * [
+         *      {
+         *          "id": int,
+         *          "content": string,
+         *          "user": {
+         *              "id": int,
+         *              "name": string,
+         *              "profile_image": string
+         *          },
+         *          "created": date
+         *      },
+         *      ...
+         * ]
+         */
+        $limit = key_exists("limit", $_GET) ? $_GET["limit"] : 10;
+        $current_page = key_exists("page", $_GET) ? $_GET["page"] : 1;
+
+        /**
+         * @var Post $post
+         */
+        $post = ResourceHelper::findResourceOr404Exception(Post::class, $postId);
+        return $post
+            ->comments()
+            ->with(["user:id,name,profile_image"])
+            ->paginate($limit, ["*"], "page", $current_page)
+            ->items();
+    }
+
+    protected function create($userId, $postId)
+    {
+
+        $user = ResourceHelper::findResourceOr404Exception(User::class, $userId);
         $post = ResourceHelper::findResourceOr404Exception(Post::class, $postId);
 
         $payload = RequestHelper::getRequestPayload();
@@ -42,14 +76,15 @@ class CommentController extends BaseController
         return ["message" => "comment has been successfully created."];
     }
 
-    protected function update($commentId) {
+    protected function update($commentId)
+    {
 
         $comment = ResourceHelper::findResourceOr404Exception(Comment::class, $commentId);
         $payload = RequestHelper::getRequestPayload();
 
         $content = $payload['content'];
         $comment->update([
-           "content" => $content
+            "content" => $content
         ]);
         return ["message" => "comment has been successfully updated."];
     }
