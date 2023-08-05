@@ -24,9 +24,6 @@ class PostController extends BaseController
             ]
         ],
         "create" => [
-            "url" => [
-                "userId" => [Rules::INTEGER]
-            ],
             "payload" => [
                 "content" => [Rules::REQUIRED, Rules::STRING]
             ]
@@ -130,13 +127,10 @@ class PostController extends BaseController
         );
     }
 
-    protected function create($userId)
+    protected function create()
     {
-
-        $user = ResourceHelper::findResourceOr404Exception(User::class, $userId);
-
         $payload = RequestHelper::getRequestPayload();
-        $post = $user->posts()->create([
+        $post = $this->authenticatedUser->posts()->create([
             "content" => $payload["content"]
         ]);
 
