@@ -8,12 +8,15 @@ use CustomExceptions\ResourceNotFound;
 use Helpers\RequestHelper;
 use Helpers\ResourceHelper;
 
+use Mixins\AuthenticateUser;
 use Models\Like;
 use Models\Post;
 use Models\User;
 
 class PostController extends BaseController
 {
+    use AuthenticateUser;
+
     protected $validationSchema = [
         "index" => [
             "url" => [
@@ -43,6 +46,12 @@ class PostController extends BaseController
             ]
         ]
     ];
+
+    public function __construct()
+    {
+        $this->skipHandlers = ["show"];
+        parent::__construct();
+    }
 
     protected function index($userId)
     {
@@ -138,6 +147,8 @@ class PostController extends BaseController
     {
 
         $post = ResourceHelper::findResourceOr404Exception(Post::class, $postId);
+
+        $this->authenticatedUser->validateIsUserAuthorizedTo($post);
 
         $payload = RequestHelper::getRequestPayload();
         $post->update($payload);

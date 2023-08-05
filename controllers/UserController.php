@@ -3,12 +3,14 @@ namespace Controllers;
 
 use Constants\Rules;
 use CustomExceptions\BadRequestException;
-use CustomExceptions\ResourceNotFound;
+use CustomExceptions\UnAuthorizedException;
 use Helpers\RequestHelper;
 use Helpers\ResourceHelper;
+use Mixins\AuthenticateUser;
 use Models\User;
 
 class UserController extends BaseController {
+    use AuthenticateUser;
 
     protected $validationSchema = [
         "create" => [
@@ -52,6 +54,12 @@ class UserController extends BaseController {
         ]
     ];
 
+    public function __construct()
+    {
+        $this->skipHandlers = ["index", "show", "create"];
+        parent::__construct();
+    }
+
     protected function index() {
 
         $limit = key_exists("limit", $_GET) ? $_GET["limit"] : 10;
@@ -86,6 +94,9 @@ class UserController extends BaseController {
         }
 
         $user = ResourceHelper::findResourceOr404Exception(User::class, $id);
+
+        $this->authenticatedUser->validateIsUserAuthorizedTo($user, "id");
+
         $user->update($payload);
 
         return [

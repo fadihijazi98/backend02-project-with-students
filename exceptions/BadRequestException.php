@@ -5,12 +5,15 @@ namespace CustomExceptions;
 use Constants\StatusCodes;
 use Exception;
 
-class BadRequestException extends Exception
+class BadRequestException extends BaseException
 {
-
-    public function __construct($message)
+    protected function getMessageException($message = "")
     {
+        return $message ?: "Bad usage exception.";
+    }
 
-        parent::__construct($message, StatusCodes::VALIDATION_ERROR, null);
+    protected function getCodeException()
+    {
+        return StatusCodes::VALIDATION_ERROR;
     }
 }
