@@ -60,6 +60,7 @@ class UserController extends BaseController {
         parent::__construct();
     }
 
+    // GET /users
     protected function index() {
 
         $limit = key_exists("limit", $_GET) ? $_GET["limit"] : 10;
@@ -69,11 +70,13 @@ class UserController extends BaseController {
         return $paginator->items();
     }
 
+    // GET /users/{userId}
     protected function show($id) {
 
         return ResourceHelper::findResourceOr404Exception(User::class, $id);
     }
 
+    // POST /users
     protected function create() {
 
         $payload = RequestHelper::getRequestPayload();
@@ -85,6 +88,7 @@ class UserController extends BaseController {
         ];
     }
 
+    // PUT /users/{userId}
     protected function update($id) {
 
         $payload = RequestHelper::getRequestPayload();
@@ -104,6 +108,7 @@ class UserController extends BaseController {
         ];
     }
 
+    // DELETE /users/{userId}
     protected function delete($id) {
 
         $user =  ResourceHelper::findResourceOr404Exception(User::class, $id);
