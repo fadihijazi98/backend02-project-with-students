@@ -2,18 +2,18 @@
 
 namespace CustomExceptions;
 
-use Constants\StatusCodes;
-use Exception;
 
-class ResourceNotFound extends BaseException
+use Constants\StatusCodes;
+
+class UnAuthorizedException extends BaseException
 {
     protected function getMessageException($message = "")
     {
-        return $message ?: "Resource Not found.";
+        return $message ?: "Your are not authorized to do that.";
     }
 
     protected function getCodeException()
     {
-        return StatusCodes::NOT_FOUND;
+        return StatusCodes::FORBIDDEN;
     }
 }

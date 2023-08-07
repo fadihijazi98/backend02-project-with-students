@@ -3,15 +3,18 @@
 namespace Controllers;
 use Constants\Rules;
 use CustomExceptions\ResourceNotFound;
+use CustomExceptions\UnAuthorizedException;
 use Helpers\RequestHelper;
 use Helpers\ResourceHelper;
 use CustomExceptions\BadRequestException;
+use Mixin\AuthenticateUser;
 use Models\Like;
 use Models\Post;
 use Models\User;
 
 class PostController extends BaseController
 {
+    use AuthenticateUser;
     protected $validationSchema = [
         "index" => [
             "url" => [
@@ -19,9 +22,6 @@ class PostController extends BaseController
             ]
         ],
         "create" => [
-            "url" => [
-                "userId" => [Rules::INTEGER]
-            ],
             "payload" => [
                 "content" => [Rules::STRING, Rules::REQUIRED]
             ]
@@ -42,31 +42,40 @@ class PostController extends BaseController
         ]
     ];
 
+    public function __construct()
+    {
+        $this->skipHandlers = ["show"];
+        parent::__construct();
+    }
+
     /**
      * @throws ResourceNotFound
      */
+    //GET users/{userId}/posts
     protected function index($userId)
     {
-        $limit = key_exists("limit", $_GET) ? $_GET["limit"] : 10;
-        $current_page = key_exists("page", $_GET) ? $_GET["page"] : 1;
+        $user = ResourceHelper::findResourceOr404Exception(User::class, $userId);
 
-        $user = ResourceHelper::findResourceOr404Exception(User::class,$userId);
-
-        $posts =$user
-            ->posts
-            ->with(['user:id,name,profile_img', 'likes', 'comments','comments.user:id,name,profile_img'])
-            ->paginate($limit, ["id", "content", "created", "user_id"], "page", $current_page)
-            ->items();
-
-
-        return ResourceHelper::loadOnlyForList(
-            ["id", "content", "created", "publisher_user", "likes_count", "recent_likes", "comments_count", "recent_comments"],
-            $posts
+        $paginatedPosts = ResourceHelper::getPaginatedResource(
+            $user->posts(),
+            ["id", "content", "created", "user_id"],
+            ['user:id,name,profile_img', 'likes', 'comments', 'comments.user:id,name,profile_img'],
         );
+
+        $posts = ResourceHelper::loadOnlyForList(
+            ["id", "content", "created", "publisher_user", "likes_count", "recent_likes", "comments_count", "recent_comments"],
+            $paginatedPosts
+        );
+
+        return $posts;
 
     }
 
+//GET posts/{postId}
 
+    /**
+     * @throws ResourceNotFound
+     */
     protected function show($postId)
     {
         $post = ResourceHelper::findResourceOr404Exception(
@@ -83,14 +92,14 @@ class PostController extends BaseController
     /**
      * @throws ResourceNotFound
      */
-    protected function create($userId)
+    // POST posts
+    protected function create()
     {
 
-        $user = ResourceHelper::findResourceOr404Exception(User::class, $userId);
 
         $payload = RequestHelper::getRequestPayload();
 
-        $post = $user->posts()->create([
+        $post =  $this->authenticatedUser->posts()->create([
             "content" => $payload["content"]
         ]);
 
@@ -100,27 +109,31 @@ class PostController extends BaseController
 
     /**
      * @throws ResourceNotFound
+     * @throws UnAuthorizedException
      */
+   // PUT posts/{postId}
     protected function update($postId)
     {
-
         $post = ResourceHelper::findResourceOr404Exception(Post::class, $postId);
+
+        $this->authenticatedUser->validateIsUserAuthorizedTo($post);
 
         $payload = RequestHelper::getRequestPayload();
         $post->update($payload);
 
-        return ["message" => "post within id #$post->id has been updated successfully"];
-
-
+        return ["message" => "post has been successfully updated."];
     }
 
     /**
      * @throws ResourceNotFound
+     * @throws UnAuthorizedException
      */
+     // DELETE posts/{postId}
     protected function delete($postId)
     {
 
         $post = ResourceHelper::findResourceOr404Exception(Post::class, $postId);
+        $this->authenticatedUser->validateIsUserAuthorizedTo($post);
 
         $post->delete();
         return ["message" => "post  has been deleted successfully"];
@@ -130,18 +143,15 @@ class PostController extends BaseController
      * @throws BadRequestException
      * @throws ResourceNotFound
      */
+     // POST users/{userId}/posts/{postId}/like
     protected function like($userId, $postId)
     {
 
+        $user = ResourceHelper::findResourceOr404Exception(User::class, $userId);
         $post = ResourceHelper::findResourceOr404Exception(Post::class, $postId);
-        $user = ResourceHelper::findResourceOr404Exception(Like::class, $userId);
 
-        $is_like_exists = Like::query()
-            ->where('user_id', $user->id)
-            ->where('post_id', $post->id)
-            ->exists();
-
-        if ($is_like_exists) {
+        $isLikeExists = Like::query()->where("user_id", $user->id)->where("post_id", $post->id)->exists();
+        if ($isLikeExists) {
 
             throw new BadRequestException("this user (" . $user->username . ") is already like the post.");
         }
@@ -152,13 +162,14 @@ class PostController extends BaseController
         ]);
 
         return ["message" => "User (" . $user->username . ") like the post that have (" . $post->content . ") as content."];
-
     }
+
 
     /**
      * @throws BadRequestException
      * @throws ResourceNotFound
      */
+     // POST users/{userId}/posts/{postId}/unlike
     protected function unLike($userId, $postId)
     {
 

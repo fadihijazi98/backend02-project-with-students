@@ -1,15 +1,19 @@
 <?php
-require 'vendor/autoload.php';
-use Illuminate\Database\Capsule\Manager as capsule ;
 
-$capsule = new Capsule;
+require 'vendor/autoload.php';
+
+use Dotenv\Dotenv;
+Dotenv::createImmutable(__DIR__)->safeLoad();
+use Illuminate\Database\Capsule\Manager as Capsule;
+
+$capsule = new Capsule();
 
 $capsule->addConnection([
-    'driver' => 'mysql',
-    'host' => '127.0.0.1',
-    'database' => 'backend02-project-with-students',
-    'username' => 'root',
-    'password' => '',
+    'driver' => $_ENV['DB_DRIVER'],
+    'host' => $_ENV['DB_HOST'],
+    'database' => $_ENV['DB_NAME'],
+    'username' => $_ENV['DB_USERNAME'],
+    'password' => $_ENV['DB_PASS'],
 ]);
 
 $capsule->setAsGlobal();

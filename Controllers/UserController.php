@@ -3,13 +3,17 @@
 namespace Controllers;
 use CustomExceptions\BadRequestException;
 use CustomExceptions\ResourceNotFound;
+use CustomExceptions\UnAuthorizedException;
 use Helpers\RequestHelper;
 use Helpers\ResourceHelper;
+use Mixin\AuthenticateUser;
 use Models\User;
 use Constants\Rules;
 use Illuminate\Pagination\Paginator;
 class UserController extends BaseController
 {
+    use AuthenticateUser;
+
     protected $validationSchema = [
         "create"=>[
             "payload"=>[
@@ -51,24 +55,27 @@ class UserController extends BaseController
             ]
         ]
     ];
-
+    public function __construct()
+    {
+        $this->skipHandlers = ["create"];
+        parent::__construct();
+    }
+    // GET /users
     protected function index(){
 
-        $limit=key_exists("limit",$_GET) ? $_GET["limit"] : 10 ;
+       return ResourceHelper::getPaginatedResource(User::class,["id","username","profile_img"]);
 
-        $current_page=key_exists("page",$_GET) ? $_GET["page"] : 1;
-        $paginator = User::query()->paginate($limit,["id","username","profile_img"],'page',$current_page);
-
-        return $paginator->items();
     }
 
     /**
      * @throws ResourceNotFound
      */
+    // GET /users/{userId}
     protected function show($id){
 
        return ResourceHelper::findResourceOr404Exception(User::class, $id);
     }
+    // POST /users
     protected function create(){
         $payload =RequestHelper::getRequestPayload();
         $payload["password"]=md5($payload["password"]);
@@ -78,19 +85,36 @@ class UserController extends BaseController
             "id" => $user->id
         ];
     }
+    // PUT /users/{userId}
+
+    /**
+     * @throws UnAuthorizedException
+     * @throws BadRequestException
+     * @throws ResourceNotFound
+     */
     protected function update($id){
+
         $payload=RequestHelper::getRequestPayload();
 
         if(key_exists("password",$payload)){
             throw new BadRequestException("Unable to Update the password");
         }
+
         $user = ResourceHelper::findResourceOr404Exception(User::class, $id);
+
+        $this->authenticatedUser->validateIsUserAuthorizedTo($user, "id");
+
         $user->update($payload);
+
         return [
-            "message" => "updated"
+            "message" => "updated."
         ];
     }
+    // DELETE /users/{userId}
 
+    /**
+     * @throws ResourceNotFound
+     */
     protected function delete($id){
 
         $user = ResourceHelper::findResourceOr404Exception(User::class, $id);
@@ -99,6 +123,5 @@ class UserController extends BaseController
             "message"=>"deleted"
         ];
     }
-
 
    }
